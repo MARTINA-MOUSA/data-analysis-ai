@@ -145,7 +145,7 @@ class Dashboard:
             for idx, viz in enumerate(st.session_state.visualizations):
                 with st.expander(f"Visualization {idx + 1}", expanded=True):
                     if viz['type'] == 'plotly_figure':
-                        st.plotly_chart(viz['data'], width='stretch')
+                        st.plotly_chart(viz['data'], width='stretch', key=f"viz_{idx}")
                     st.code(viz['code'], language='python')
         
         st.markdown("---")
@@ -175,7 +175,7 @@ class Dashboard:
                             formatted = st.session_state.analysis_engine.format_result(result)
                             
                             if formatted['type'] == 'plotly_figure':
-                                st.plotly_chart(formatted['data'], width='stretch')
+                                st.plotly_chart(formatted['data'], width='stretch', key=f"custom_viz_{len(st.session_state.visualizations)}")
                                 # Save visualization
                                 st.session_state.visualizations.append({
                                     'type': 'plotly_figure',
@@ -307,7 +307,8 @@ class Dashboard:
                                     st.markdown(f"**{gauge['title']}**")
                                 if gauge.get('description'):
                                     st.caption(gauge['description'])
-                                st.plotly_chart(gauge['data'], use_container_width=True, height=350)
+                                chart_key = f"auto_gauge_{idx}_{gauge.get('title', str(idx)).replace(' ', '_')[:20]}"
+                                st.plotly_chart(gauge['data'], use_container_width=True, height=350, key=chart_key)
                         st.markdown("---")
                     
                     # Row 2: Stacked bars and volume charts - 3 columns
@@ -326,7 +327,8 @@ class Dashboard:
                                     st.markdown(f"**{bar['title']}**")
                                 if bar.get('description'):
                                     st.caption(bar['description'])
-                                st.plotly_chart(bar['data'], use_container_width=True, height=380)
+                                chart_key = f"auto_bar_{idx}_{bar.get('title', str(idx)).replace(' ', '_')[:20]}"
+                                st.plotly_chart(bar['data'], use_container_width=True, height=380, key=chart_key)
                         st.markdown("---")
                     
                     # Row 3: Top categories and pie charts - 2 columns
@@ -344,7 +346,8 @@ class Dashboard:
                                     st.markdown(f"**{top['title']}**")
                                 if top.get('description'):
                                     st.caption(top['description'])
-                                st.plotly_chart(top['data'], use_container_width=True, height=420)
+                                chart_key = f"auto_top_{top.get('title', 'top_categories').replace(' ', '_')[:20]}_{col_idx}"
+                                st.plotly_chart(top['data'], use_container_width=True, height=420, key=chart_key)
                             col_idx += 1
                         
                         # Pie/Donut charts
@@ -355,18 +358,20 @@ class Dashboard:
                                     st.markdown(f"**{pie['title']}**")
                                 if pie.get('description'):
                                     st.caption(pie['description'])
-                                st.plotly_chart(pie['data'], use_container_width=True, height=420)
+                                chart_key = f"auto_pie_{pie.get('title', 'pie_chart').replace(' ', '_')[:20]}_{col_idx}"
+                                st.plotly_chart(pie['data'], use_container_width=True, height=420, key=chart_key)
                         st.markdown("---")
                     
                     # Full width: Area charts for trends
                     if area_charts:
                         st.markdown("#### 📉 Trend Analysis Over Time")
-                        for area in area_charts:
+                        for idx, area in enumerate(area_charts):
                             if area.get('title'):
                                 st.markdown(f"**{area['title']}**")
                             if area.get('description'):
                                 st.caption(area['description'])
-                            st.plotly_chart(area['data'], width='stretch', height=450)
+                            chart_key = f"auto_area_{idx}_{area.get('title', str(idx)).replace(' ', '_')[:20]}"
+                            st.plotly_chart(area['data'], width='stretch', height=450, key=chart_key)
                             st.markdown("---")
                     
                     # Remaining charts in 3-column grid
@@ -386,7 +391,8 @@ class Dashboard:
                                             st.markdown(f"**{viz['title']}**")
                                         if viz.get('description'):
                                             st.caption(viz['description'])
-                                        st.plotly_chart(viz['data'], use_container_width=True, height=320)
+                                        chart_key = f"auto_additional_{row}_{col_idx}_{viz_idx}_{viz.get('title', f'{row}_{col_idx}').replace(' ', '_')[:15]}"
+                                        st.plotly_chart(viz['data'], use_container_width=True, height=320, key=chart_key)
                 else:
                     st.info("No visualizations generated yet. Click 'Generate Dashboard' to create visualizations.")
             else:

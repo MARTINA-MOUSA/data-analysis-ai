@@ -38,3 +38,110 @@ ValueError: "ColumnInfoTool" object has no field "data_handler"
 2025-11-18 21:20:30,130 - data_analysis_ai - INFO - dashboard_generator.py:165 - Generated visualization: Correlation Matrix
 2025-11-18 21:20:33,793 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 3.66s
 2025-11-18 21:20:33,913 - data_analysis_ai - INFO - dashboard_generator.py:165 - Generated visualization: Top Region by Order ID
+2025-11-18 21:30:53,031 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:30:53,045 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:30:53,108 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:31:03,437 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:31:03,440 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:31:03,450 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:31:03,590 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:31:03,593 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:31:03,604 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:31:05,442 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:31:05,445 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:31:05,454 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:31:05,594 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:31:05,603 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:31:05,614 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:31:07,858 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:31:07,861 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:31:07,870 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:31:08,032 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:31:08,032 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:31:08,048 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:31:10,424 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:31:10,427 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:31:10,437 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:31:10,504 - data_analysis_ai - INFO - dashboard_generator.py:181 - Generating auto dashboard...
+2025-11-18 21:31:16,193 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 5.69s
+2025-11-18 21:31:16,441 - data_analysis_ai - INFO - dashboard_generator.py:220 - Generated visualization: Sum of Order ID by Region
+2025-11-18 21:31:20,833 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 4.39s
+2025-11-18 21:31:20,907 - data_analysis_ai - INFO - dashboard_generator.py:220 - Generated visualization: Sum of Order ID by Region
+2025-11-18 21:31:24,484 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 3.58s
+2025-11-18 21:31:24,675 - data_analysis_ai - INFO - dashboard_generator.py:220 - Generated visualization: Sum of Order ID by Region
+2025-11-18 21:31:26,895 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 2.22s
+2025-11-18 21:31:27,015 - data_analysis_ai - INFO - dashboard_generator.py:220 - Generated visualization: Sum of Units Sold by Item Type
+2025-11-18 21:31:29,307 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 2.29s
+2025-11-18 21:31:29,430 - data_analysis_ai - INFO - dashboard_generator.py:220 - Generated visualization: Sum of Total Profit by Item Type
+2025-11-18 21:32:04,473 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:32:04,476 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:32:04,487 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:32:04,565 - data_analysis_ai - INFO - report_generator.py:39 - Generating comprehensive report...
+2025-11-18 21:32:13,923 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 9.35s
+2025-11-18 21:32:23,411 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:32:23,415 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:32:23,424 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:32:23,569 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:32:23,572 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:32:23,587 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:32:27,245 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 13.31s
+2025-11-18 21:32:30,379 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:32:30,382 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:32:30,396 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:32:30,491 - data_analysis_ai - INFO - report_generator.py:39 - Generating comprehensive report...
+2025-11-18 21:32:40,205 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 9.71s
+2025-11-18 21:32:41,929 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 14.68s
+2025-11-18 21:32:52,383 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 10.45s
+2025-11-18 21:32:58,913 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 18.70s
+2025-11-18 21:33:10,772 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 11.86s
+2025-11-18 21:33:24,529 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 13.76s
+2025-11-18 21:33:58,613 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:33:58,617 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:33:58,627 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:34:05,440 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:34:05,443 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:34:05,456 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:34:05,609 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:34:05,612 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:34:05,625 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:34:07,108 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:34:07,110 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:34:07,119 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:34:07,160 - data_analysis_ai - INFO - dashboard_generator.py:181 - Generating auto dashboard...
+2025-11-18 21:34:10,825 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 3.66s
+2025-11-18 21:34:10,945 - data_analysis_ai - INFO - dashboard_generator.py:220 - Generated visualization: Sum of Order ID by Region
+2025-11-18 21:34:14,463 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 3.52s
+2025-11-18 21:34:14,517 - data_analysis_ai - INFO - dashboard_generator.py:220 - Generated visualization: Sum of Order ID by Region
+2025-11-18 21:34:19,467 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 4.95s
+2025-11-18 21:34:19,615 - data_analysis_ai - INFO - dashboard_generator.py:220 - Generated visualization: Sum of Order ID by Region
+2025-11-18 21:34:23,866 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 4.25s
+2025-11-18 21:34:23,887 - data_analysis_ai - INFO - dashboard_generator.py:220 - Generated visualization: Sum of Units Sold by Item Type
+2025-11-18 21:34:26,927 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 3.04s
+2025-11-18 21:34:27,002 - data_analysis_ai - INFO - dashboard_generator.py:220 - Generated visualization: Sum of Total Profit by Item Type
+2025-11-18 21:47:20,236 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:47:20,251 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:47:20,333 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:47:29,360 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:47:29,365 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:47:29,377 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:47:29,588 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:47:29,593 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:47:29,605 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:47:31,048 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:47:31,052 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:47:31,060 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:47:31,110 - data_analysis_ai - INFO - dashboard_generator.py:209 - Generating auto dashboard...
+2025-11-18 21:47:45,407 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 14.29s
+2025-11-18 21:47:45,453 - data_analysis_ai - INFO - dashboard_generator.py:268 - Generated visualization: Performance Indicator
+2025-11-18 21:47:57,534 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 12.08s
+2025-11-18 21:47:57,543 - data_analysis_ai - INFO - dashboard_generator.py:268 - Generated visualization: Completion Rate
+2025-11-18 21:48:10,135 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 12.59s
+2025-11-18 21:48:10,287 - data_analysis_ai - INFO - dashboard_generator.py:268 - Generated visualization: Volume by Region
+2025-11-18 21:48:21,929 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 11.64s
+2025-11-18 21:48:22,087 - data_analysis_ai - INFO - dashboard_generator.py:268 - Generated visualization: Top Categories by Order ID
+2025-11-18 21:48:32,193 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 10.11s
+2025-11-18 21:48:32,285 - data_analysis_ai - INFO - dashboard_generator.py:268 - Generated visualization: Volume by Item Type
+2025-11-18 21:48:39,363 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 7.08s
+2025-11-18 21:48:39,383 - data_analysis_ai - INFO - dashboard_generator.py:268 - Generated visualization: Order ID Distribution
+2025-11-18 21:48:43,469 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 4.09s
+2025-11-18 21:48:43,514 - data_analysis_ai - INFO - dashboard_generator.py:268 - Generated visualization: Distribution by Region
