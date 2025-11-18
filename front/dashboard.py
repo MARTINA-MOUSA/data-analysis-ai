@@ -33,6 +33,8 @@ class Dashboard:
             st.session_state.visualizations = []
         if 'insights' not in st.session_state:
             st.session_state.insights = []
+        if 'auto_dashboard' not in st.session_state:
+            st.session_state.auto_dashboard = None
     
     def render_sidebar(self):
         """Render sidebar with file upload"""
@@ -193,6 +195,109 @@ class Dashboard:
                     logger.error(f"Unexpected error: {e}", exc_info=True)
                     st.error(f"Unexpected error: {str(e)}")
     
+    def render_auto_dashboard_tab(self):
+        """Render auto-generated Power BI-like dashboard"""
+        st.header("📊 Auto Dashboard")
+        st.markdown("**AI-Generated Dashboard - No Code Required!**")
+        
+        if not st.session_state.data_handler.is_loaded():
+            st.info("👆 Please upload a CSV file from the sidebar to get started")
+            return
+        
+        if not st.session_state.agent:
+            st.error("AI Agent not initialized")
+            return
+        
+        # Generate dashboard button
+        col1, col2, col3 = st.columns([1, 1, 3])
+        with col1:
+            generate_btn = st.button("🚀 Generate Dashboard", type="primary", use_container_width=True)
+        with col2:
+            if st.session_state.auto_dashboard:
+                refresh_btn = st.button("🔄 Refresh", use_container_width=True)
+            else:
+                refresh_btn = False
+        
+        # Generate or refresh dashboard
+        if generate_btn or (refresh_btn and st.session_state.auto_dashboard):
+            with st.spinner("🤖 AI is analyzing your data and creating a Power BI-like dashboard..."):
+                try:
+                    dashboard_data = st.session_state.agent.generate_auto_dashboard()
+                    if 'error' not in dashboard_data:
+                        st.session_state.auto_dashboard = dashboard_data
+                        st.success("✅ Dashboard generated successfully!")
+                    else:
+                        st.error(f"Error: {dashboard_data.get('error')}")
+                except LLMError as e:
+                    logger.error(f"LLM error: {e}")
+                    st.error(f"AI service error: {str(e)}")
+                except Exception as e:
+                    logger.error(f"Unexpected error: {e}", exc_info=True)
+                    st.error(f"Unexpected error: {str(e)}")
+        
+        # Display dashboard
+        if st.session_state.auto_dashboard:
+            dashboard = st.session_state.auto_dashboard
+            
+            # Show insights
+            if dashboard.get('insights'):
+                with st.expander("📊 Dashboard Insights", expanded=False):
+                    for insight in dashboard['insights']:
+                        st.markdown(f"• {insight}")
+            
+            st.markdown("---")
+            
+            # Display metrics
+            if dashboard.get('visualizations'):
+                metrics_viz = [v for v in dashboard['visualizations'] if v.get('type') == 'metrics']
+                if metrics_viz:
+                    st.subheader("📈 Key Metrics")
+                    metrics = metrics_viz[0].get('data', [])
+                    cols = st.columns(min(len(metrics), 5))
+                    for idx, metric in enumerate(metrics[:5]):
+                        with cols[idx % len(cols)]:
+                            if metric.get('mean') is not None:
+                                st.metric(
+                                    label=metric['name'],
+                                    value=f"{metric['mean']:,.2f}",
+                                    delta=f"Max: {metric['max']:,.2f}" if metric.get('max') else None
+                                )
+                    st.markdown("---")
+                
+                # Display visualizations
+                plotly_viz = [v for v in dashboard['visualizations'] if v.get('type') == 'plotly_figure']
+                if plotly_viz:
+                    st.subheader("📊 Visualizations")
+                    
+                    # Display in grid layout
+                    for idx, viz in enumerate(plotly_viz):
+                        with st.container():
+                            if viz.get('title'):
+                                st.markdown(f"### {viz['title']}")
+                            if viz.get('description'):
+                                st.caption(viz['description'])
+                            
+                            st.plotly_chart(viz['data'], width='stretch')
+                            
+                            if idx < len(plotly_viz) - 1:
+                                st.markdown("---")
+                else:
+                    st.info("No visualizations generated yet. Click 'Generate Dashboard' to create visualizations.")
+            else:
+                st.info("No dashboard data available. Click 'Generate Dashboard' to create one.")
+        else:
+            st.info("""
+            👆 **Click 'Generate Dashboard' to automatically create a Power BI-like dashboard!**
+            
+            The AI will:
+            - Analyze your data structure
+            - Generate appropriate visualizations
+            - Create key metrics and KPIs
+            - Provide insights automatically
+            
+            **No coding required!** 🚀
+            """)
+    
     def render_ai_insights_tab(self):
         """Render AI insights tab"""
         st.header("🤖 AI Insights")
@@ -274,14 +379,17 @@ class Dashboard:
         self.render_sidebar()
         
         # Main tabs
-        tab1, tab2, tab3 = st.tabs(["📋 Summary", "📈 Visualizations", "🤖 AI Insights"])
+        tab1, tab2, tab3, tab4 = st.tabs(["📋 Summary", "📊 Auto Dashboard", "📈 Visualizations", "🤖 AI Insights"])
         
         with tab1:
             self.render_summary_tab()
         
         with tab2:
-            self.render_visualizations_tab()
+            self.render_auto_dashboard_tab()
         
         with tab3:
+            self.render_visualizations_tab()
+        
+        with tab4:
             self.render_ai_insights_tab()
 

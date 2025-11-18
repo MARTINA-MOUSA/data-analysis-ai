@@ -168,4 +168,26 @@ class DataAnalysisAgent:
             "columns": info.get("columns", []),
             "shape": info.get("shape")
         }
+    
+    def generate_auto_dashboard(self) -> dict:
+        """
+        Generate an automatic Power BI-like dashboard
+        
+        Returns:
+            dict: Dashboard with visualizations
+        """
+        from ai.dashboard_generator import AutoDashboardGenerator
+        from back.analysis_engine import AnalysisEngine
+        
+        if not self.data_handler.is_loaded():
+            return {"error": "No data loaded"}
+        
+        analysis_engine = AnalysisEngine(self.data_handler.get_dataframe())
+        generator = AutoDashboardGenerator(
+            self.data_handler,
+            analysis_engine,
+            self.llm_client
+        )
+        
+        return generator.generate_dashboard()
 
