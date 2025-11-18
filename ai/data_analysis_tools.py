@@ -25,9 +25,17 @@ class ColumnInfoTool(BaseTool):
     description: str = "Get information about the columns in the dataframe. Use this to understand what data is available."
     args_schema: Type[BaseModel] = ColumnInfoInput
     
-    def __init__(self, data_handler: DataHandler):
-        super().__init__()
-        self.data_handler = data_handler
+    # Store data_handler as a private attribute (not a Pydantic field)
+    _data_handler: DataHandler = None
+    
+    def __init__(self, data_handler: DataHandler, **kwargs):
+        super().__init__(**kwargs)
+        object.__setattr__(self, '_data_handler', data_handler)
+    
+    @property
+    def data_handler(self) -> DataHandler:
+        """Get the data handler"""
+        return self._data_handler
     
     def _run(self) -> str:
         """Execute the tool"""
@@ -66,10 +74,24 @@ class GenerateCodeTool(BaseTool):
     Always import necessary libraries at the start."""
     args_schema: Type[BaseModel] = GenerateCodeInput
     
-    def __init__(self, data_handler: DataHandler, llm_client):
-        super().__init__()
-        self.data_handler = data_handler
-        self.llm_client = llm_client
+    # Store handlers as private attributes (not Pydantic fields)
+    _data_handler: DataHandler = None
+    _llm_client = None
+    
+    def __init__(self, data_handler: DataHandler, llm_client, **kwargs):
+        super().__init__(**kwargs)
+        object.__setattr__(self, '_data_handler', data_handler)
+        object.__setattr__(self, '_llm_client', llm_client)
+    
+    @property
+    def data_handler(self) -> DataHandler:
+        """Get the data handler"""
+        return self._data_handler
+    
+    @property
+    def llm_client(self):
+        """Get the LLM client"""
+        return self._llm_client
     
     def _run(self, task: str, columns: Optional[list] = None) -> str:
         """Execute the tool"""

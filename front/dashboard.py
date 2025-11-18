@@ -109,17 +109,17 @@ class Dashboard:
             'Data Type': [str(info['dtypes'][col]) for col in info['columns']],
             'Null Count': [info['null_counts'][col] for col in info['columns']]
         })
-        st.dataframe(col_info_df, use_container_width=True)
+        st.dataframe(col_info_df, width='stretch')
         
         st.markdown("---")
         
         # Data preview
         st.subheader("Data Preview")
-        st.dataframe(df.head(10), use_container_width=True)
+        st.dataframe(df.head(10), width='stretch')
         
         # Statistics
         st.subheader("Statistical Summary")
-        st.dataframe(df.describe(), use_container_width=True)
+        st.dataframe(df.describe(), width='stretch')
     
     def render_visualizations_tab(self):
         """Render visualizations tab"""
@@ -139,7 +139,7 @@ class Dashboard:
             for idx, viz in enumerate(st.session_state.visualizations):
                 with st.expander(f"Visualization {idx + 1}", expanded=True):
                     if viz['type'] == 'plotly_figure':
-                        st.plotly_chart(viz['data'], use_container_width=True)
+                        st.plotly_chart(viz['data'], width='stretch')
                     st.code(viz['code'], language='python')
         
         st.markdown("---")
@@ -169,7 +169,7 @@ class Dashboard:
                             formatted = st.session_state.analysis_engine.format_result(result)
                             
                             if formatted['type'] == 'plotly_figure':
-                                st.plotly_chart(formatted['data'], use_container_width=True)
+                                st.plotly_chart(formatted['data'], width='stretch')
                                 # Save visualization
                                 st.session_state.visualizations.append({
                                     'type': 'plotly_figure',
@@ -177,9 +177,9 @@ class Dashboard:
                                     'code': code_input
                                 })
                             elif formatted['type'] == 'dataframe':
-                                st.dataframe(formatted['data'], use_container_width=True)
+                                st.dataframe(formatted['data'], width='stretch')
                             elif formatted['type'] == 'series':
-                                st.dataframe(formatted['data'], use_container_width=True)
+                                st.dataframe(formatted['data'], width='stretch')
                             else:
                                 st.write("Result:", formatted['data'])
                     
