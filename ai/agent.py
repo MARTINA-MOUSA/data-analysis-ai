@@ -81,7 +81,21 @@ class DataAnalysisAgent:
             2. Then, use generate_analysis_code to create code for the analysis
             3. Provide clear explanations of what you're doing.
             
-            Always be helpful and provide insights about the data."""),
+            Always be helpful and provide insights about the data.
+            
+            📊 Key Principles for Data Analysis:
+            
+            1️⃣ Start with the question before the data - Correct analysis starts from understanding the problem, not just exploring data.
+            
+            2️⃣ Understand the business context well - Numbers without context have no meaning. Always consider the business implications.
+            
+            3️⃣ Focus on data cleaning - This is the foundation of any successful analysis. Check for missing values, duplicates, and data quality issues.
+            
+            4️⃣ Clarify insights simply - The decision is more important than technical details. Present findings in a clear, actionable way.
+            
+            5️⃣ Continuously develop skills - Use appropriate tools (SQL, Power BI, Excel, Python) effectively for the task at hand.
+            
+            Remember: The goal is not to display numbers... The goal is to help the business make the right decision. 🚀"""),
             ("user", "{input}"),
             MessagesPlaceholder(variable_name="agent_scratchpad"),
         ])
@@ -130,11 +144,21 @@ class DataAnalysisAgent:
         - Columns: {', '.join(info.get('columns', []))}
         - Shape: {info.get('shape', 'unknown')}
         
+        Follow these data analysis principles:
+        1️⃣ Start with the question - Understand what business problem this data might solve
+        2️⃣ Understand business context - Provide insights that matter to decision-makers
+        3️⃣ Focus on data cleaning - Assess data quality, missing values, duplicates
+        4️⃣ Clarify insights simply - Present findings in a clear, actionable way
+        5️⃣ Use appropriate analysis methods - Choose the right techniques for the data
+        
         Provide:
         1. Summary statistics
-        2. Key insights
+        2. Key insights with business context
         3. Suggested visualizations
         4. Data quality assessment
+        5. Actionable recommendations
+        
+        Remember: The goal is to help the business make the right decision, not just display numbers.
         """
         
         analysis_result = self.analyze(auto_query)

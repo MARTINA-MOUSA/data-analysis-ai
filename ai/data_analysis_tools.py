@@ -101,11 +101,29 @@ Requirements:
 6. Only output the Python code, no explanations
 7. Import necessary libraries at the start
 
+📊 Data Analysis Best Practices:
+1️⃣ Start with the question before the data - Understand the problem first
+2️⃣ Understand the business context - Numbers without context have no meaning
+3️⃣ Focus on data cleaning - Check for missing values, duplicates, and data quality
+4️⃣ Clarify insights simply - Present findings in a clear, actionable way
+5️⃣ Use appropriate tools effectively - SQL, Power BI, Excel, Python
+
+Remember: The goal is to help the business make the right decision, not just display numbers.
+
 Generate the code:
 """
         
         messages = [
-            {"role": "system", "content": "You are a Python data analysis expert. Generate clean, efficient code."},
+            {"role": "system", "content": """You are a Python data analysis expert. Generate clean, efficient code.
+            
+📊 Key Principles for Data Analysis:
+1️⃣ Start with the question before the data - Correct analysis starts from understanding the problem
+2️⃣ Understand the business context well - Numbers without context have no meaning
+3️⃣ Focus on data cleaning - This is the foundation of any successful analysis
+4️⃣ Clarify insights simply - The decision is more important than technical details
+5️⃣ Continuously develop skills - Use appropriate tools (SQL, Power BI, Excel, Python) effectively
+
+Remember: The goal is not to display numbers... The goal is to help the business make the right decision. 🚀"""},
             {"role": "user", "content": context}
         ]
         
