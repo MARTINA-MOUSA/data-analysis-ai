@@ -21,8 +21,8 @@ class ColumnInfoInput(BaseModel):
 class ColumnInfoTool(BaseTool):
     """Tool to get information about dataframe columns"""
     
-    name = "get_column_info"
-    description = "Get information about the columns in the dataframe. Use this to understand what data is available."
+    name: str = "get_column_info"
+    description: str = "Get information about the columns in the dataframe. Use this to understand what data is available."
     args_schema: Type[BaseModel] = ColumnInfoInput
     
     def __init__(self, data_handler: DataHandler):
@@ -58,8 +58,8 @@ class GenerateCodeInput(BaseModel):
 class GenerateCodeTool(BaseTool):
     """Tool to generate Python/pandas/plotly code for data analysis"""
     
-    name = "generate_analysis_code"
-    description = """Generate Python code using pandas and plotly to analyze data. 
+    name: str = "generate_analysis_code"
+    description: str = """Generate Python code using pandas and plotly to analyze data. 
     The code should use 'df' as the dataframe variable.
     For visualizations, use plotly (px or go) and assign to 'fig' or 'result'.
     For calculations, assign results to 'result' variable.
