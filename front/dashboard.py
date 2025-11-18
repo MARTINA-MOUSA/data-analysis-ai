@@ -147,57 +147,8 @@ class Dashboard:
                     if viz['type'] == 'plotly_figure':
                         st.plotly_chart(viz['data'], width='stretch', key=f"viz_{idx}")
                     st.code(viz['code'], language='python')
-        
-        st.markdown("---")
-        
-        # Manual code execution
-        st.subheader("Create Custom Visualization")
-        code_input = st.text_area(
-            "Enter Python code (use 'df' for dataframe, 'px' or 'go' for plotly):",
-            height=200,
-            help="Write Python code to create visualizations or perform analysis"
-        )
-        
-        col1, col2 = st.columns([1, 4])
-        with col1:
-            execute_btn = st.button("▶️ Execute Code", type="primary")
-        
-        if execute_btn and code_input:
-            with st.spinner("Executing code..."):
-                try:
-                    result, output, error = st.session_state.analysis_engine.execute_code(code_input)
-                    
-                    if error:
-                        st.error(f"Error: {error}")
-                        st.code(output, language='python')
-                    else:
-                        if result is not None:
-                            formatted = st.session_state.analysis_engine.format_result(result)
-                            
-                            if formatted['type'] == 'plotly_figure':
-                                st.plotly_chart(formatted['data'], width='stretch', key=f"custom_viz_{len(st.session_state.visualizations)}")
-                                # Save visualization
-                                st.session_state.visualizations.append({
-                                    'type': 'plotly_figure',
-                                    'data': formatted['data'],
-                                    'code': code_input
-                                })
-                            elif formatted['type'] == 'dataframe':
-                                st.dataframe(formatted['data'], width='stretch')
-                            elif formatted['type'] == 'series':
-                                st.dataframe(formatted['data'], width='stretch')
-                            else:
-                                st.write("Result:", formatted['data'])
-                    
-                        if output:
-                            st.text("Output:")
-                            st.code(output)
-                except AnalysisExecutionError as e:
-                    logger.error(f"Analysis execution error: {e}")
-                    st.error(f"Execution error: {str(e)}")
-                except Exception as e:
-                    logger.error(f"Unexpected error: {e}", exc_info=True)
-                    st.error(f"Unexpected error: {str(e)}")
+        else:
+            st.info("👆 Use the 'Auto Dashboard' tab to generate visualizations automatically, or use the 'AI Insights' tab to ask questions about your data.")
     
     def render_auto_dashboard_tab(self):
         """Render auto-generated Power BI-like dashboard"""
@@ -364,8 +315,9 @@ class Dashboard:
                                 if viz.get('description'):
                                     st.caption(viz['description'])
                                 # Display table data
-                                if viz.get('data'):
-                                    st.dataframe(viz['data'], width='stretch', height=400)
+                                table_data = viz.get('data')
+                                if table_data is not None:
+                                    st.dataframe(table_data, width='stretch', height=400)
                         st.markdown("---")
                     
                     # Bottom Row: 3 columns (Vertical Bar, Area, Horizontal Bar)
