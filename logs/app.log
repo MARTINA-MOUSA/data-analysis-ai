@@ -302,3 +302,214 @@ ValueError: "ColumnInfoTool" object has no field "data_handler"
 2025-11-18 22:28:56,999 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
 2025-11-18 22:28:57,004 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
 2025-11-18 22:28:57,017 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:36:21,522 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:36:21,543 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:36:21,615 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:36:28,318 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:36:28,321 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:36:28,331 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:36:28,466 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:36:28,469 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:36:28,480 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:36:30,065 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:36:30,068 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:36:30,078 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:36:30,115 - data_analysis_ai - INFO - dashboard_generator.py:209 - Generating auto dashboard...
+2025-11-18 22:36:50,000 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 19.88s
+2025-11-18 22:36:50,397 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Item Type
+2025-11-18 22:37:16,159 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 25.76s
+2025-11-18 22:37:16,392 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Region
+2025-11-18 22:37:34,685 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 18.29s
+2025-11-18 22:37:34,809 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Country
+2025-11-18 22:37:57,415 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 22.61s
+2025-11-18 22:37:57,433 - data_analysis_ai - INFO - dashboard_generator.py:260 - Generated table: Summary by Region
+2025-11-18 22:38:18,816 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 21.38s
+2025-11-18 22:38:19,167 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Item Type
+2025-11-18 22:38:53,611 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 34.44s
+2025-11-18 22:38:53,644 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Sales Channel
+2025-11-18 22:39:16,199 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 22.56s
+2025-11-18 22:39:16,258 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Order Priority
+2025-11-18 22:41:39,720 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:41:39,795 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:41:39,827 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:41:39,965 - data_analysis_ai - INFO - dashboard_generator.py:209 - Generating auto dashboard...
+2025-11-18 22:41:54,988 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:41:54,992 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:41:55,007 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:41:59,144 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:41:59,148 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:41:59,163 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:41:59,298 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:41:59,302 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:41:59,313 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:42:00,311 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:42:00,314 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:42:00,326 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:42:00,372 - data_analysis_ai - INFO - dashboard_generator.py:209 - Generating auto dashboard...
+2025-11-18 22:42:04,224 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 24.26s
+2025-11-18 22:42:04,385 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Item Type
+2025-11-18 22:42:21,541 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 21.16s
+2025-11-18 22:42:21,577 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Item Type
+2025-11-18 22:42:35,268 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 30.88s
+2025-11-18 22:42:35,421 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Region
+2025-11-18 22:42:41,251 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 19.67s
+2025-11-18 22:42:41,302 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Region
+2025-11-18 22:42:54,070 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 12.77s
+2025-11-18 22:42:54,176 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Country
+2025-11-18 22:43:00,299 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 24.88s
+2025-11-18 22:43:00,451 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Country
+2025-11-18 22:43:10,554 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 16.38s
+2025-11-18 22:43:10,574 - data_analysis_ai - ERROR - analysis_engine.py:68 - Code execution error: Invalid property specified for object of type plotly.graph_objs.table.Cells: 'hoverinfo'
+
+Did you mean "height"?
+
+    Valid properties:
+        align
+            Sets the horizontal alignment of the `text` within the
+            box. Has an effect only if `text` spans two or more
+            lines (i.e. `text` contains one or more <br> HTML tags)
+            or if an explicit width is set to override the text
+            width.
+        alignsrc
+            Sets the source reference on Chart Studio Cloud for
+            `align`.
+        fill
+            :class:`plotly.graph_objects.table.cells.Fill` instance
+            or dict with compatible properties
+        font
+            :class:`plotly.graph_objects.table.cells.Font` instance
+            or dict with compatible properties
+        format
+            Sets the cell value formatting rule using d3 formatting
+            mini-languages which are very similar to those in
+            Python. For numbers, see:
+            https://github.com/d3/d3-format/tree/v1.4.5#d3-format.
+        formatsrc
+            Sets the source reference on Chart Studio Cloud for
+            `format`.
+        height
+            The height of cells.
+        line
+            :class:`plotly.graph_objects.table.cells.Line` instance
+            or dict with compatible properties
+        prefix
+            Prefix for cell values.
+        prefixsrc
+            Sets the source reference on Chart Studio Cloud for
+            `prefix`.
+        suffix
+            Suffix for cell values.
+        suffixsrc
+            Sets the source reference on Chart Studio Cloud for
+            `suffix`.
+        values
+            Cell values. `values[m][n]` represents the value of the
+            `n`th point in column `m`, therefore the `values[m]`
+            vector length for all columns must be the same (longer
+            vectors will be truncated). Each value must be a finite
+            number or a string.
+        valuessrc
+            Sets the source reference on Chart Studio Cloud for
+            `values`.
+        
+Did you mean "height"?
+
+Bad property path:
+hoverinfo
+^^^^^^^^^
+Traceback (most recent call last):
+  File "C:\Users\DELL\Desktop\Ai\data-analysis-ai\back\analysis_engine.py", line 53, in execute_code
+    exec(code, self.execution_context)
+  File "<string>", line 51, in <module>
+  File "c:\users\dell\desktop\ai\data-analysis-ai\venv\lib\site-packages\plotly\graph_objs\_figure.py", line 188, in update_traces
+    return super().update_traces(
+  File "c:\users\dell\desktop\ai\data-analysis-ai\venv\lib\site-packages\plotly\basedatatypes.py", line 1388, in update_traces
+    trace.update(patch, overwrite=overwrite, **kwargs)
+  File "c:\users\dell\desktop\ai\data-analysis-ai\venv\lib\site-packages\plotly\basedatatypes.py", line 5195, in update
+    BaseFigure._perform_update(self, kwargs, overwrite=overwrite)
+  File "c:\users\dell\desktop\ai\data-analysis-ai\venv\lib\site-packages\plotly\basedatatypes.py", line 3971, in _perform_update
+    BaseFigure._perform_update(plotly_obj[key], val)
+  File "c:\users\dell\desktop\ai\data-analysis-ai\venv\lib\site-packages\plotly\basedatatypes.py", line 3949, in _perform_update
+    raise err
+ValueError: Invalid property specified for object of type plotly.graph_objs.table.Cells: 'hoverinfo'
+
+Did you mean "height"?
+
+    Valid properties:
+        align
+            Sets the horizontal alignment of the `text` within the
+            box. Has an effect only if `text` spans two or more
+            lines (i.e. `text` contains one or more <br> HTML tags)
+            or if an explicit width is set to override the text
+            width.
+        alignsrc
+            Sets the source reference on Chart Studio Cloud for
+            `align`.
+        fill
+            :class:`plotly.graph_objects.table.cells.Fill` instance
+            or dict with compatible properties
+        font
+            :class:`plotly.graph_objects.table.cells.Font` instance
+            or dict with compatible properties
+        format
+            Sets the cell value formatting rule using d3 formatting
+            mini-languages which are very similar to those in
+            Python. For numbers, see:
+            https://github.com/d3/d3-format/tree/v1.4.5#d3-format.
+        formatsrc
+            Sets the source reference on Chart Studio Cloud for
+            `format`.
+        height
+            The height of cells.
+        line
+            :class:`plotly.graph_objects.table.cells.Line` instance
+            or dict with compatible properties
+        prefix
+            Prefix for cell values.
+        prefixsrc
+            Sets the source reference on Chart Studio Cloud for
+            `prefix`.
+        suffix
+            Suffix for cell values.
+        suffixsrc
+            Sets the source reference on Chart Studio Cloud for
+            `suffix`.
+        values
+            Cell values. `values[m][n]` represents the value of the
+            `n`th point in column `m`, therefore the `values[m]`
+            vector length for all columns must be the same (longer
+            vectors will be truncated). Each value must be a finite
+            number or a string.
+        valuessrc
+            Sets the source reference on Chart Studio Cloud for
+            `values`.
+        
+Did you mean "height"?
+
+Bad property path:
+hoverinfo
+^^^^^^^^^
+2025-11-18 22:43:21,809 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 21.36s
+2025-11-18 22:43:21,834 - data_analysis_ai - INFO - dashboard_generator.py:260 - Generated table: Summary by Region
+2025-11-18 22:43:27,422 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 16.85s
+2025-11-18 22:43:27,497 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Item Type
+2025-11-18 22:43:52,359 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 30.53s
+2025-11-18 22:43:52,449 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Item Type
+2025-11-18 22:43:59,211 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 31.71s
+2025-11-18 22:44:15,264 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 16.01s
+2025-11-18 22:44:15,426 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Order Priority
+2025-11-18 22:44:23,244 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 30.80s
+2025-11-18 22:44:23,432 - data_analysis_ai - ERROR - analysis_engine.py:68 - Code execution error: 'Date'
+Traceback (most recent call last):
+  File "C:\Users\DELL\Desktop\Ai\data-analysis-ai\back\analysis_engine.py", line 53, in execute_code
+    exec(code, self.execution_context)
+  File "<string>", line 7, in <module>
+  File "c:\users\dell\desktop\ai\data-analysis-ai\venv\lib\site-packages\pandas\core\frame.py", line 9210, in groupby
+    return DataFrameGroupBy(
+  File "c:\users\dell\desktop\ai\data-analysis-ai\venv\lib\site-packages\pandas\core\groupby\groupby.py", line 1331, in __init__
+    grouper, exclusions, obj = get_grouper(
+  File "c:\users\dell\desktop\ai\data-analysis-ai\venv\lib\site-packages\pandas\core\groupby\grouper.py", line 1043, in get_grouper
+    raise KeyError(gpr)
+KeyError: 'Date'
+2025-11-18 22:44:42,730 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 19.30s
+2025-11-18 22:44:42,859 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Order Priority
