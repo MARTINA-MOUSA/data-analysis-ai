@@ -535,3 +535,13 @@ KeyError: 'Date'
 2025-11-18 22:47:57,660 - data_analysis_ai - INFO - dashboard_generator.py:253 - Generated table: Summary by Region
 2025-11-18 22:48:18,062 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 20.40s
 2025-11-18 22:48:18,149 - data_analysis_ai - INFO - dashboard_generator.py:298 - Generated visualization: Distribution by Item Type
+2025-11-18 22:48:50,390 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 32.24s
+2025-11-18 22:48:50,432 - data_analysis_ai - INFO - dashboard_generator.py:298 - Generated visualization: Distribution by Sales Channel
+2025-11-18 22:49:22,198 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 31.77s
+2025-11-18 22:49:22,264 - data_analysis_ai - INFO - dashboard_generator.py:298 - Generated visualization: Distribution by Order Priority
+2025-11-18 22:49:52,942 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:49:52,948 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:49:52,972 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:49:53,110 - data_analysis_ai - INFO - report_generator.py:39 - Generating comprehensive report...
+2025-11-18 22:50:45,547 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 52.43s
+2025-11-18 22:51:50,235 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 64.62s
