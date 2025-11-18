@@ -320,6 +320,138 @@ class Dashboard:
             **No coding required!** 🚀
             """)
     
+    def render_report_tab(self):
+        """Render comprehensive data analysis report"""
+        st.header("📄 Data Analysis Report")
+        st.markdown("**Comprehensive Report with Predictions & Insights**")
+        
+        if not st.session_state.data_handler.is_loaded():
+            st.info("👆 Please upload a CSV file from the sidebar to get started")
+            return
+        
+        if not st.session_state.agent:
+            st.error("AI Agent not initialized")
+            return
+        
+        # Generate report button
+        col1, col2 = st.columns([1, 4])
+        with col1:
+            generate_report_btn = st.button("📊 Generate Report", type="primary", use_container_width=True)
+        
+        # Generate report
+        if generate_report_btn:
+            with st.spinner("🤖 AI is generating comprehensive report with predictions and insights..."):
+                try:
+                    report_data = st.session_state.agent.generate_report()
+                    if 'error' not in report_data:
+                        st.session_state.report = report_data
+                        st.success("✅ Report generated successfully!")
+                    else:
+                        st.error(f"Error: {report_data.get('error')}")
+                except LLMError as e:
+                    logger.error(f"LLM error: {e}")
+                    st.error(f"AI service error: {str(e)}")
+                except Exception as e:
+                    logger.error(f"Unexpected error: {e}", exc_info=True)
+                    st.error(f"Unexpected error: {str(e)}")
+        
+        # Display report
+        if st.session_state.report:
+            report = st.session_state.report
+            
+            # Data Overview
+            st.markdown("## 📊 Data Overview")
+            overview = report.get('data_overview', {})
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Total Rows", f"{overview.get('total_rows', 0):,}")
+            with col2:
+                st.metric("Total Columns", overview.get('total_columns', 0))
+            with col3:
+                st.metric("Null Values", f"{overview.get('null_values', 0):,}")
+            with col4:
+                st.metric("Duplicate Rows", f"{overview.get('duplicate_rows', 0):,}")
+            
+            st.markdown("---")
+            
+            # Data Explanation
+            st.markdown("## 📖 What This Data Contains")
+            explanation = report.get('data_explanation', '')
+            st.markdown(explanation)
+            
+            st.markdown("---")
+            
+            # Data Quality
+            st.markdown("## ✅ Data Quality Assessment")
+            quality = report.get('data_quality', {})
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Completeness", f"{quality.get('completeness_percentage', 0):.1f}%")
+            with col2:
+                st.metric("Quality Score", f"{quality.get('quality_score', 0):.1f}/100")
+            with col3:
+                st.metric("Duplicate %", f"{quality.get('duplicate_percentage', 0):.1f}%")
+            
+            if quality.get('columns_with_nulls'):
+                st.warning(f"⚠️ Columns with null values: {', '.join(quality['columns_with_nulls'][:5])}")
+            
+            st.markdown("---")
+            
+            # Predictions
+            st.markdown("## 🔮 Predictions & Forecasts")
+            predictions = report.get('predictions', '')
+            st.markdown(predictions)
+            
+            st.markdown("---")
+            
+            # Key Insights
+            st.markdown("## 💡 Key Insights")
+            insights = report.get('insights', '')
+            st.markdown(insights)
+            
+            st.markdown("---")
+            
+            # Recommendations
+            st.markdown("## 🎯 Recommendations")
+            recommendations = report.get('recommendations', '')
+            st.markdown(recommendations)
+            
+            st.markdown("---")
+            
+            # Statistical Summary
+            with st.expander("📈 Statistical Summary", expanded=False):
+                stats = report.get('statistical_summary', {})
+                if stats:
+                    for col, values in list(stats.items())[:10]:
+                        st.markdown(f"### {col}")
+                        col1, col2, col3, col4 = st.columns(4)
+                        with col1:
+                            st.write(f"**Mean:** {values.get('mean', 0):.2f}")
+                            st.write(f"**Median:** {values.get('median', 0):.2f}")
+                        with col2:
+                            st.write(f"**Std:** {values.get('std', 0):.2f}")
+                            st.write(f"**Min:** {values.get('min', 0):.2f}")
+                        with col3:
+                            st.write(f"**Max:** {values.get('max', 0):.2f}")
+                            st.write(f"**Q25:** {values.get('q25', 0):.2f}")
+                        with col4:
+                            st.write(f"**Q75:** {values.get('q75', 0):.2f}")
+                        st.markdown("---")
+        else:
+            st.info("""
+            👆 **Click 'Generate Report' to create a comprehensive data analysis report!**
+            
+            The report will include:
+            - 📖 Detailed explanation of what the data contains
+            - ✅ Data quality assessment
+            - 🔮 Predictions and forecasts
+            - 💡 Key insights and findings
+            - 🎯 Actionable recommendations
+            - 📈 Statistical summary
+            
+            **All in Arabic!** 🚀
+            """)
+    
     def render_ai_insights_tab(self):
         """Render AI insights tab"""
         st.header("🤖 AI Insights")
