@@ -1,65 +1,65 @@
 # Data Analysis AI 📊
 
-مشروع تحليل البيانات باستخدام الذكاء الاصطناعي - يعتمد على Streamlit و LangChain و Baseten API
+AI-powered data analysis project using Streamlit, LangChain, and Baseten API
 
-## المميزات
+## Features
 
-- 📁 رفع ملفات CSV وتحليلها تلقائياً
-- 🤖 ذكاء اصطناعي لتحليل البيانات والإجابة على الأسئلة
-- 📈 إنشاء رسوم بيانية تفاعلية باستخدام Plotly
-- 🔍 تحليل تلقائي للبيانات
-- 💻 تنفيذ كود Python مباشرة للتحليل المخصص
+- 📁 Upload and automatically analyze CSV files
+- 🤖 AI-powered data analysis and question answering
+- 📈 Create interactive visualizations using Plotly
+- 🔍 Automatic data analysis
+- 💻 Execute Python code directly for custom analysis
 
-## البنية
+## Project Structure
 
 ```
 data-analysis-ai/
-├── ai/                 # وحدات الذكاء الاصطناعي
+├── ai/                 # AI modules
 │   ├── agent.py       # LangChain Agent
-│   ├── llm_client.py  # عميل Baseten API
-│   └── data_analysis_tools.py  # أدوات التحليل
-├── front/             # واجهة المستخدم
-│   └── dashboard.py   # مكونات Streamlit
-├── back/              # منطق العمل
-│   ├── data_handler.py      # معالج البيانات
-│   └── analysis_engine.py   # محرك التحليل
-├── config.py          # الإعدادات
-├── app.py             # نقطة الدخول الرئيسية
-├── .env               # متغيرات البيئة
-└── requirements.txt   # المكتبات المطلوبة
+│   ├── llm_client.py  # Baseten API client
+│   └── data_analysis_tools.py  # Analysis tools
+├── front/             # User interface
+│   └── dashboard.py   # Streamlit components
+├── back/              # Business logic
+│   ├── data_handler.py      # Data handler
+│   └── analysis_engine.py   # Analysis engine
+├── config.py          # Configuration
+├── app.py             # Main entry point
+├── .env               # Environment variables
+└── requirements.txt   # Required libraries
 ```
 
-## التثبيت
+## Installation
 
-1. تثبيت المكتبات:
+1. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. إعداد ملف `.env`:
-   - انسخ ملف `env.example` إلى `.env`
-   - أو أنشئ ملف `.env` يدوياً وأضف:
+2. Setup `.env` file:
+   - Copy `env.example` to `.env`
+   - Or create `.env` manually and add:
 ```env
 BASETEN_API_KEY=your_api_key_here
 BASETEN_BASE_URL=https://inference.baseten.co/v1
 BASETEN_MODEL=openai/gpt-oss-120b
 ```
 
-## التشغيل
+## Running
 
 ```bash
 streamlit run app.py
 ```
 
-## الاستخدام
+## Usage
 
-1. ارفع ملف CSV من الشريط الجانبي
-2. استخدم التبويبات للتنقل:
-   - **Summary**: نظرة عامة على البيانات
-   - **Visualizations**: إنشاء رسوم بيانية
-   - **AI Insights**: طرح أسئلة على الذكاء الاصطناعي
+1. Upload a CSV file from the sidebar
+2. Use the tabs to navigate:
+   - **Summary**: Overview of the data
+   - **Visualizations**: Create charts and graphs
+   - **AI Insights**: Ask questions to the AI
 
-## التقنيات المستخدمة
+## Technologies Used
 
 - Python
 - Streamlit
