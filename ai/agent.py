@@ -2,30 +2,68 @@
 LangChain Agent for Data Analysis
 """
 # Import AgentExecutor - handle different LangChain versions
+import importlib
+
+# Try multiple import strategies
+AgentExecutor = None
+create_openai_tools_agent = None
+
+# Strategy 1: Standard import
 try:
     from langchain.agents import AgentExecutor, create_openai_tools_agent
 except ImportError:
-    # For newer LangChain versions, try alternative import
+    pass
+
+# Strategy 2: Try importing separately
+if AgentExecutor is None:
     try:
-        from langchain.agents.agent_executor import AgentExecutor
+        from langchain.agents import AgentExecutor
+    except ImportError:
+        pass
+
+if create_openai_tools_agent is None:
+    try:
         from langchain.agents import create_openai_tools_agent
     except ImportError:
-        # Try importing from langchain_core
-        try:
-            from langchain_core.agents import AgentExecutor
-            from langchain.agents import create_openai_tools_agent
-        except ImportError:
-            # Fallback: import directly from module
-            import importlib
-            agents_module = importlib.import_module('langchain.agents')
+        pass
+
+# Strategy 3: Try from agent_executor module
+if AgentExecutor is None:
+    try:
+        from langchain.agents.agent_executor import AgentExecutor
+    except (ImportError, AttributeError):
+        pass
+
+# Strategy 4: Try from langchain_core
+if AgentExecutor is None:
+    try:
+        from langchain_core.agents import AgentExecutor
+    except ImportError:
+        pass
+
+# Strategy 5: Dynamic import using importlib
+if AgentExecutor is None or create_openai_tools_agent is None:
+    try:
+        agents_module = importlib.import_module('langchain.agents')
+        if AgentExecutor is None:
             AgentExecutor = getattr(agents_module, 'AgentExecutor', None)
+        if create_openai_tools_agent is None:
             create_openai_tools_agent = getattr(agents_module, 'create_openai_tools_agent', None)
-            
-            if AgentExecutor is None or create_openai_tools_agent is None:
-                raise ImportError(
-                    "Could not import AgentExecutor or create_openai_tools_agent. "
-                    "Please ensure LangChain is properly installed: pip install langchain langchain-openai"
-                )
+    except Exception:
+        pass
+
+# Final check - if still None, provide helpful error
+if AgentExecutor is None:
+    raise ImportError(
+        "Could not import AgentExecutor from langchain.agents. "
+        "Please install/upgrade LangChain: pip install --upgrade langchain langchain-openai langchain-core"
+    )
+
+if create_openai_tools_agent is None:
+    raise ImportError(
+        "Could not import create_openai_tools_agent from langchain.agents. "
+        "Please install/upgrade LangChain: pip install --upgrade langchain langchain-openai"
+    )
 
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
