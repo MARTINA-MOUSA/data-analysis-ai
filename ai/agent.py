@@ -1,7 +1,32 @@
 """
 LangChain Agent for Data Analysis
 """
-from langchain.agents import AgentExecutor, create_openai_tools_agent
+# Import AgentExecutor - handle different LangChain versions
+try:
+    from langchain.agents import AgentExecutor, create_openai_tools_agent
+except ImportError:
+    # For newer LangChain versions, try alternative import
+    try:
+        from langchain.agents.agent_executor import AgentExecutor
+        from langchain.agents import create_openai_tools_agent
+    except ImportError:
+        # Try importing from langchain_core
+        try:
+            from langchain_core.agents import AgentExecutor
+            from langchain.agents import create_openai_tools_agent
+        except ImportError:
+            # Fallback: import directly from module
+            import importlib
+            agents_module = importlib.import_module('langchain.agents')
+            AgentExecutor = getattr(agents_module, 'AgentExecutor', None)
+            create_openai_tools_agent = getattr(agents_module, 'create_openai_tools_agent', None)
+            
+            if AgentExecutor is None or create_openai_tools_agent is None:
+                raise ImportError(
+                    "Could not import AgentExecutor or create_openai_tools_agent. "
+                    "Please ensure LangChain is properly installed: pip install langchain langchain-openai"
+                )
+
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 import sys
