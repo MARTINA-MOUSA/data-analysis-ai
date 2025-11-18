@@ -35,6 +35,10 @@ class Dashboard:
             st.session_state.insights = []
         if 'auto_dashboard' not in st.session_state:
             st.session_state.auto_dashboard = None
+        if 'report' not in st.session_state:
+            st.session_state.report = None
+        if 'color_theme' not in st.session_state:
+            st.session_state.color_theme = 'default'
     
     def render_sidebar(self):
         """Render sidebar with file upload"""
@@ -208,6 +212,23 @@ class Dashboard:
             st.error("AI Agent not initialized")
             return
         
+        # Color theme selector
+        st.markdown("### 🎨 Choose Color Theme")
+        theme_cols = st.columns(4)
+        themes = ['default', 'blue', 'dark', 'corporate']
+        theme_labels = ['Default', 'Blue', 'Dark', 'Corporate']
+        
+        for idx, (theme, label) in enumerate(zip(themes, theme_labels)):
+            with theme_cols[idx]:
+                if st.button(label, key=f"theme_{theme}", use_container_width=True):
+                    st.session_state.color_theme = theme
+                    st.rerun()
+        
+        if st.session_state.color_theme:
+            st.info(f"Selected theme: **{st.session_state.color_theme.title()}**")
+        
+        st.markdown("---")
+        
         # Generate dashboard button
         col1, col2, col3 = st.columns([1, 1, 3])
         with col1:
@@ -222,7 +243,9 @@ class Dashboard:
         if generate_btn or (refresh_btn and st.session_state.auto_dashboard):
             with st.spinner("🤖 AI is analyzing your data and creating a Power BI-like dashboard..."):
                 try:
-                    dashboard_data = st.session_state.agent.generate_auto_dashboard()
+                    dashboard_data = st.session_state.agent.generate_auto_dashboard(
+                        color_theme=st.session_state.color_theme
+                    )
                     if 'error' not in dashboard_data:
                         st.session_state.auto_dashboard = dashboard_data
                         st.success("✅ Dashboard generated successfully!")
@@ -253,14 +276,13 @@ class Dashboard:
                 if metrics_viz:
                     st.subheader("📈 Key Metrics")
                     metrics = metrics_viz[0].get('data', [])
-                    cols = st.columns(min(len(metrics), 5))
-                    for idx, metric in enumerate(metrics[:5]):
+                    cols = st.columns(min(len(metrics), 4))
+                    for idx, metric in enumerate(metrics[:4]):
                         with cols[idx % len(cols)]:
-                            if metric.get('mean') is not None:
+                            if metric.get('value') is not None:
                                 st.metric(
-                                    label=metric['name'],
-                                    value=f"{metric['mean']:,.2f}",
-                                    delta=f"Max: {metric['max']:,.2f}" if metric.get('max') else None
+                                    label=metric.get('label', metric['name']),
+                                    value=metric.get('display_value', f"{metric['value']:,.0f}")
                                 )
                     st.markdown("---")
                 
@@ -379,7 +401,7 @@ class Dashboard:
         self.render_sidebar()
         
         # Main tabs
-        tab1, tab2, tab3, tab4 = st.tabs(["📋 Summary", "📊 Auto Dashboard", "📈 Visualizations", "🤖 AI Insights"])
+        tab1, tab2, tab3, tab4, tab5 = st.tabs(["📋 Summary", "📊 Auto Dashboard", "📈 Visualizations", "📄 Report", "🤖 AI Insights"])
         
         with tab1:
             self.render_summary_tab()
@@ -391,5 +413,8 @@ class Dashboard:
             self.render_visualizations_tab()
         
         with tab4:
+            self.render_report_tab()
+        
+        with tab5:
             self.render_ai_insights_tab()
 

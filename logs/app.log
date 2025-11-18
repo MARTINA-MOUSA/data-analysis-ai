@@ -1,0 +1,40 @@
+2025-11-18 21:13:33,458 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:13:33,483 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:13:33,593 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:13:34,153 - data_analysis_ai - ERROR - dashboard.py:72 - Unexpected error: "ColumnInfoTool" object has no field "data_handler"
+Traceback (most recent call last):
+  File "C:\Users\DELL\Desktop\Ai\data-analysis-ai\front\dashboard.py", line 58, in render_sidebar
+    st.session_state.agent = DataAnalysisAgent(
+  File "C:\Users\DELL\Desktop\Ai\data-analysis-ai\ai\agent.py", line 45, in __init__
+    self.tools = self._create_tools()
+  File "C:\Users\DELL\Desktop\Ai\data-analysis-ai\ai\agent.py", line 58, in _create_tools
+    column_tool = ColumnInfoTool(self.data_handler)
+  File "C:\Users\DELL\Desktop\Ai\data-analysis-ai\ai\data_analysis_tools.py", line 30, in __init__
+    self.data_handler = data_handler
+  File "c:\users\dell\desktop\ai\data-analysis-ai\venv\lib\site-packages\pydantic\main.py", line 1032, in __setattr__
+    elif (setattr_handler := self._setattr_handler(name, value)) is not None:
+  File "c:\users\dell\desktop\ai\data-analysis-ai\venv\lib\site-packages\pydantic\main.py", line 1079, in _setattr_handler
+    raise ValueError(f'"{cls.__name__}" object has no field "{name}"')
+ValueError: "ColumnInfoTool" object has no field "data_handler"
+2025-11-18 21:15:33,894 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:15:33,898 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:15:33,911 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:19:57,074 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:19:57,089 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:19:57,142 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:20:11,577 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 21:20:11,580 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 21:20:11,588 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 21:20:11,630 - data_analysis_ai - INFO - dashboard_generator.py:126 - Generating auto dashboard...
+2025-11-18 21:20:15,273 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 3.64s
+2025-11-18 21:20:15,627 - data_analysis_ai - INFO - dashboard_generator.py:165 - Generated visualization: Distribution of Order ID
+2025-11-18 21:20:18,373 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 2.75s
+2025-11-18 21:20:19,183 - data_analysis_ai - INFO - dashboard_generator.py:165 - Generated visualization: Distribution of Units Sold
+2025-11-18 21:20:21,733 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 2.55s
+2025-11-18 21:20:21,826 - data_analysis_ai - INFO - dashboard_generator.py:165 - Generated visualization: Distribution of Unit Price
+2025-11-18 21:20:26,453 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 4.63s
+2025-11-18 21:20:26,607 - data_analysis_ai - INFO - dashboard_generator.py:165 - Generated visualization: Order ID by Region
+2025-11-18 21:20:30,032 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 3.42s
+2025-11-18 21:20:30,130 - data_analysis_ai - INFO - dashboard_generator.py:165 - Generated visualization: Correlation Matrix
+2025-11-18 21:20:33,793 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 3.66s
+2025-11-18 21:20:33,913 - data_analysis_ai - INFO - dashboard_generator.py:165 - Generated visualization: Top Region by Order ID

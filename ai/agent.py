@@ -169,9 +169,12 @@ class DataAnalysisAgent:
             "shape": info.get("shape")
         }
     
-    def generate_auto_dashboard(self) -> dict:
+    def generate_auto_dashboard(self, color_theme: str = 'default') -> dict:
         """
         Generate an automatic Power BI-like dashboard
+        
+        Args:
+            color_theme: Color theme name ('default', 'blue', 'dark', 'corporate')
         
         Returns:
             dict: Dashboard with visualizations
@@ -186,8 +189,24 @@ class DataAnalysisAgent:
         generator = AutoDashboardGenerator(
             self.data_handler,
             analysis_engine,
-            self.llm_client
+            self.llm_client,
+            color_theme=color_theme
         )
         
         return generator.generate_dashboard()
+    
+    def generate_report(self) -> dict:
+        """
+        Generate comprehensive data analysis report
+        
+        Returns:
+            dict: Complete report with explanations, predictions, and insights
+        """
+        from ai.report_generator import ReportGenerator
+        
+        if not self.data_handler.is_loaded():
+            return {"error": "No data loaded"}
+        
+        generator = ReportGenerator(self.data_handler, self.llm_client)
+        return generator.generate_comprehensive_report()
 
