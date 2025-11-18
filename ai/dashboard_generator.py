@@ -122,32 +122,60 @@ class AutoDashboardGenerator:
             'total_rows': len(self.df)
         }
     
-    def generate_visualization_code(self, viz_type: str, columns: List[str], description: str) -> str:
+    def generate_visualization_code(self, viz_type: str, columns: List[str], description: str, chart_subtype: str = None) -> str:
         """
         Generate Python code for a specific visualization
         
         Args:
-            viz_type: Type of visualization (bar, line, scatter, pie, etc.)
+            viz_type: Type of visualization (bar, line, scatter, pie, gauge, area, etc.)
             columns: Columns to use
             description: Description of what to visualize
+            chart_subtype: Subtype like 'stacked', 'grouped', 'horizontal', etc.
             
         Returns:
             str: Python code for the visualization
         """
+        colors_str = ', '.join([f"'{c}'" for c in self.colors])
+        
+        # Special instructions for different chart types
+        special_instructions = ""
+        if viz_type == 'gauge':
+            special_instructions = """
+- Create a gauge chart using go.Indicator with mode='gauge+number'
+- Set value between 0-100
+- Use domain={'x': [0, 1], 'y': [0, 1]}
+- Add threshold lines and colors
+"""
+        elif viz_type == 'area':
+            special_instructions = """
+- Create an area chart using go.Scatter with fill='tonexty' or fill='tozeroy'
+- Use stacked area if multiple series
+"""
+        elif chart_subtype == 'stacked':
+            special_instructions = """
+- Create a stacked bar/area chart
+- Use barmode='stack' for bars
+"""
+        
         context = f"""
 Generate Python code to create a {viz_type} chart using plotly.
 
 DataFrame variable: df
 Columns to use: {', '.join(columns)}
 Description: {description}
+Chart subtype: {chart_subtype or 'standard'}
+Color palette: [{colors_str}]
 
 Requirements:
 1. Use plotly express (px) or graph_objects (go)
 2. Assign the figure to variable 'fig'
 3. Make it interactive and visually appealing
 4. Add proper titles and labels
-5. Use appropriate colors
-6. Only output Python code, no markdown or explanations
+5. Use the provided color palette: {colors_str}
+6. Set dark theme: plot_bgcolor='{self.color_theme['background']}', paper_bgcolor='{self.color_theme['background']}', font_color='{self.color_theme['text']}'
+7. Make charts professional like Power BI dashboard
+{special_instructions}
+8. Only output Python code, no markdown or explanations
 
 Generate the code:
 """
@@ -201,7 +229,8 @@ Generate the code:
                 code = self.generate_visualization_code(
                     viz_info['type'],
                     viz_info['columns'],
-                    viz_info['description']
+                    viz_info['description'],
+                    chart_subtype=viz_info.get('subtype')
                 )
                 
                 # Execute the code
@@ -210,12 +239,31 @@ Generate the code:
                 if not error and result is not None:
                     formatted = self.analysis_engine.format_result(result)
                     if formatted['type'] == 'plotly_figure':
+                        # Update figure layout for dark theme
+                        fig = formatted['data']
+                        try:
+                            fig.update_layout(
+                                plot_bgcolor=self.color_theme['background'],
+                                paper_bgcolor=self.color_theme['background'],
+                                font_color=self.color_theme['text'],
+                                title_font_color=self.color_theme['text'],
+                                legend=dict(
+                                    bgcolor=self.color_theme['background'],
+                                    bordercolor=self.color_theme['text'],
+                                    borderwidth=1
+                                ) if hasattr(fig, 'update_layout') else None
+                            )
+                        except:
+                            pass  # If update fails, continue with original figure
+                        
                         visualizations.append({
                             'type': 'plotly_figure',
-                            'data': formatted['data'],
+                            'data': fig,
                             'code': code,
                             'title': viz_info['title'],
-                            'description': viz_info['description']
+                            'description': viz_info['description'],
+                            'chart_type': viz_info.get('type'),
+                            'subtype': viz_info.get('subtype')
                         })
                         logger.info(f"Generated visualization: {viz_info['title']}")
             except Exception as e:
@@ -271,106 +319,114 @@ Generate the code:
         return metrics
     
     def _plan_visualizations(self, structure: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Plan which visualizations to create based on data structure (Power BI style)"""
+        """Plan which visualizations to create - All in one page dashboard"""
         plan = []
         
         numeric_cols = structure['numeric_cols']
         categorical_cols = structure['categorical_cols']
         date_cols = structure['date_cols']
         
-        # 1. Sum by Category (Donut/Pie chart) - Top middle
+        # 1. Gauge Chart - Service Level / Performance Indicator (Top Left)
+        if numeric_cols:
+            num_col = numeric_cols[0]
+            # Calculate percentage for gauge
+            plan.append({
+                'type': 'gauge',
+                'columns': [num_col],
+                'title': f'Performance Indicator',
+                'description': f'Overall performance based on {num_col}',
+                'subtype': None
+            })
+        
+        # 2. Semi-circular Gauge - Handle Rate / Completion Rate (Middle Left)
+        if numeric_cols and len(numeric_cols) > 1:
+            num_col = numeric_cols[1]
+            plan.append({
+                'type': 'gauge',
+                'columns': [num_col],
+                'title': f'Completion Rate',
+                'description': f'Completion rate based on {num_col}',
+                'subtype': 'semicircular'
+            })
+        
+        # 3. Stacked Bar Chart - Volume by Category/Date (Top Middle)
         if categorical_cols and numeric_cols:
             cat_col = categorical_cols[0]
             num_col = numeric_cols[0]
             plan.append({
-                'type': 'pie',
+                'type': 'bar',
                 'columns': [cat_col, num_col],
-                'title': f'Sum of {num_col} by {cat_col}',
-                'description': f'Distribution of {num_col} across {cat_col} categories'
+                'title': f'Volume by {cat_col}',
+                'description': f'Stacked volume breakdown by {cat_col}',
+                'subtype': 'stacked'
             })
         
-        # 2. Sum by State/Location (Horizontal Bar) - Top left
+        # 4. Top Skills/Categories with Progress Bars (Middle Middle)
         if categorical_cols and numeric_cols:
-            # Try to find location-like column
-            location_cols = [c for c in categorical_cols if any(word in c.lower() for word in ['state', 'city', 'location', 'region', 'country', 'area'])]
-            if not location_cols:
-                location_cols = categorical_cols[:1]
+            cat_col = categorical_cols[0] if categorical_cols else None
+            num_col = numeric_cols[0]
+            plan.append({
+                'type': 'horizontal_bar',
+                'columns': [cat_col, num_col],
+                'title': f'Top Categories by {num_col}',
+                'description': f'Top performing categories',
+                'subtype': 'top_n'
+            })
+        
+        # 5. Horizontal Stacked Bar - Volume by Modality/Type (Top Right)
+        if categorical_cols and numeric_cols:
+            type_cols = [c for c in categorical_cols if any(word in c.lower() for word in ['type', 'modality', 'category', 'method', 'mode'])]
+            if not type_cols:
+                type_cols = categorical_cols[:1]
             
-            if location_cols and numeric_cols:
-                loc_col = location_cols[0]
+            if type_cols and numeric_cols:
+                type_col = type_cols[0]
                 num_col = numeric_cols[0]
                 plan.append({
                     'type': 'bar',
-                    'columns': [loc_col, num_col],
-                    'title': f'Sum of {num_col} by {loc_col}',
-                    'description': f'Compare {num_col} across different {loc_col}',
-                    'orientation': 'h'
+                    'columns': [type_col, num_col],
+                    'title': f'Volume by {type_col}',
+                    'description': f'Volume breakdown by {type_col}',
+                    'subtype': 'stacked_horizontal'
                 })
         
-        # 3. Sum by Customer/Name (Vertical Bar) - Bottom left
-        if categorical_cols and numeric_cols:
-            name_cols = [c for c in categorical_cols if any(word in c.lower() for word in ['customer', 'name', 'client', 'user', 'person'])]
-            if not name_cols:
-                name_cols = categorical_cols[:1]
-            
-            if name_cols and numeric_cols:
-                name_col = name_cols[0]
-                num_col = numeric_cols[0]
-                plan.append({
-                    'type': 'bar',
-                    'columns': [name_col, num_col],
-                    'title': f'Sum of {num_col} by {name_col}',
-                    'description': f'Top {name_col} by {num_col}',
-                    'orientation': 'v'
-                })
-        
-        # 4. Profit/Amount by Month (Line/Bar) - Top right
+        # 6. Area Chart - Trend over Time (Bottom Right)
         if date_cols and numeric_cols:
             date_col = date_cols[0]
             num_col = numeric_cols[0]
             plan.append({
-                'type': 'bar',
+                'type': 'area',
                 'columns': [date_col, num_col],
-                'title': f'{num_col} by Month',
-                'description': f'Show {num_col} trends over time',
-                'orientation': 'v'
+                'title': f'{num_col} Trend Over Time',
+                'description': f'Trend analysis of {num_col}',
+                'subtype': 'stacked'
+            })
+        elif categorical_cols and numeric_cols:
+            # Use categorical as x-axis if no date
+            cat_col = categorical_cols[0]
+            num_col = numeric_cols[0]
+            plan.append({
+                'type': 'area',
+                'columns': [cat_col, num_col],
+                'title': f'{num_col} Distribution',
+                'description': f'Distribution of {num_col}',
+                'subtype': None
             })
         
-        # 5. Sum by Payment Mode/Category (Donut) - Middle right
-        if categorical_cols and numeric_cols:
-            payment_cols = [c for c in categorical_cols if any(word in c.lower() for word in ['payment', 'mode', 'method', 'type', 'category'])]
-            if not payment_cols and len(categorical_cols) > 1:
-                payment_cols = categorical_cols[1:2]
-            
-            if payment_cols and numeric_cols:
-                pay_col = payment_cols[0]
-                num_col = numeric_cols[1] if len(numeric_cols) > 1 else numeric_cols[0]
+        # 7. Donut/Pie Chart - Distribution (if we have space)
+        if categorical_cols and numeric_cols and len(plan) < 7:
+            cat_col = categorical_cols[0] if len(categorical_cols) > 0 else None
+            num_col = numeric_cols[1] if len(numeric_cols) > 1 else numeric_cols[0]
+            if cat_col:
                 plan.append({
                     'type': 'pie',
-                    'columns': [pay_col, num_col],
-                    'title': f'Sum of {num_col} by {pay_col}',
-                    'description': f'Distribution by {pay_col}'
+                    'columns': [cat_col, num_col],
+                    'title': f'Distribution by {cat_col}',
+                    'description': f'Percentage distribution',
+                    'subtype': 'donut'
                 })
         
-        # 6. Sum by Sub-Category (Horizontal Bar) - Bottom right
-        if categorical_cols and numeric_cols:
-            subcat_cols = [c for c in categorical_cols if any(word in c.lower() for word in ['sub', 'category', 'product', 'item'])]
-            if not subcat_cols and len(categorical_cols) > 2:
-                subcat_cols = categorical_cols[2:3]
-            
-            if subcat_cols and numeric_cols:
-                subcat_col = subcat_cols[0]
-                profit_cols = [c for c in numeric_cols if 'profit' in c.lower()]
-                num_col = profit_cols[0] if profit_cols else numeric_cols[0]
-                plan.append({
-                    'type': 'bar',
-                    'columns': [subcat_col, num_col],
-                    'title': f'Sum of {num_col} by {subcat_col}',
-                    'description': f'Compare {num_col} by {subcat_col}',
-                    'orientation': 'h'
-                })
-        
-        return plan[:6]  # Limit to 6 visualizations (2x3 grid like Power BI)
+        return plan[:8]  # Allow up to 8 visualizations for comprehensive dashboard
     
     def _generate_insights(self, structure: Dict[str, Any], visualizations: List[Dict[str, Any]]) -> List[str]:
         """Generate insights from the data"""

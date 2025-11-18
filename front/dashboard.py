@@ -286,23 +286,107 @@ class Dashboard:
                                 )
                     st.markdown("---")
                 
-                # Display visualizations
+                # Display visualizations in grid layout (all in one page like the image)
                 plotly_viz = [v for v in dashboard['visualizations'] if v.get('type') == 'plotly_figure']
                 if plotly_viz:
-                    st.subheader("📊 Visualizations")
+                    st.subheader("📊 Complete Dashboard - All Visualizations")
                     
-                    # Display in grid layout
-                    for idx, viz in enumerate(plotly_viz):
-                        with st.container():
-                            if viz.get('title'):
-                                st.markdown(f"### {viz['title']}")
-                            if viz.get('description'):
-                                st.caption(viz['description'])
-                            
-                            st.plotly_chart(viz['data'], width='stretch')
-                            
-                            if idx < len(plotly_viz) - 1:
-                                st.markdown("---")
+                    # Separate charts by type for organized layout
+                    gauge_charts = [v for v in plotly_viz if v.get('chart_type') == 'gauge']
+                    bar_charts = [v for v in plotly_viz if v.get('chart_type') == 'bar' or v.get('chart_type') == 'horizontal_bar']
+                    area_charts = [v for v in plotly_viz if v.get('chart_type') == 'area']
+                    pie_charts = [v for v in plotly_viz if v.get('chart_type') == 'pie']
+                    
+                    # Row 1: Gauges (Performance Indicators) - 2 columns
+                    if gauge_charts:
+                        st.markdown("#### 🎯 Performance Indicators")
+                        gauge_cols = st.columns(min(len(gauge_charts), 2))
+                        for idx, gauge in enumerate(gauge_charts[:2]):
+                            with gauge_cols[idx]:
+                                if gauge.get('title'):
+                                    st.markdown(f"**{gauge['title']}**")
+                                if gauge.get('description'):
+                                    st.caption(gauge['description'])
+                                st.plotly_chart(gauge['data'], use_container_width=True, height=350)
+                        st.markdown("---")
+                    
+                    # Row 2: Stacked bars and volume charts - 3 columns
+                    if bar_charts:
+                        st.markdown("#### 📊 Volume & Distribution Analysis")
+                        # Get stacked bars first
+                        stacked_bars = [v for v in bar_charts if v.get('subtype') in ['stacked', 'stacked_horizontal']]
+                        regular_bars = [v for v in bar_charts if v not in stacked_bars]
+                        
+                        bar_cols = st.columns(3)
+                        all_bars = stacked_bars[:2] + regular_bars[:1]  # 2 stacked + 1 regular
+                        
+                        for idx, bar in enumerate(all_bars[:3]):
+                            with bar_cols[idx]:
+                                if bar.get('title'):
+                                    st.markdown(f"**{bar['title']}**")
+                                if bar.get('description'):
+                                    st.caption(bar['description'])
+                                st.plotly_chart(bar['data'], use_container_width=True, height=380)
+                        st.markdown("---")
+                    
+                    # Row 3: Top categories and pie charts - 2 columns
+                    top_bars = [v for v in bar_charts if v.get('subtype') == 'top_n']
+                    if top_bars or pie_charts:
+                        st.markdown("#### 📈 Category & Skills Analysis")
+                        cat_cols = st.columns(2)
+                        col_idx = 0
+                        
+                        # Top categories (horizontal bars with progress)
+                        if top_bars and col_idx < 2:
+                            with cat_cols[col_idx]:
+                                top = top_bars[0]
+                                if top.get('title'):
+                                    st.markdown(f"**{top['title']}**")
+                                if top.get('description'):
+                                    st.caption(top['description'])
+                                st.plotly_chart(top['data'], use_container_width=True, height=420)
+                            col_idx += 1
+                        
+                        # Pie/Donut charts
+                        if pie_charts and col_idx < 2:
+                            with cat_cols[col_idx]:
+                                pie = pie_charts[0]
+                                if pie.get('title'):
+                                    st.markdown(f"**{pie['title']}**")
+                                if pie.get('description'):
+                                    st.caption(pie['description'])
+                                st.plotly_chart(pie['data'], use_container_width=True, height=420)
+                        st.markdown("---")
+                    
+                    # Full width: Area charts for trends
+                    if area_charts:
+                        st.markdown("#### 📉 Trend Analysis Over Time")
+                        for area in area_charts:
+                            if area.get('title'):
+                                st.markdown(f"**{area['title']}**")
+                            if area.get('description'):
+                                st.caption(area['description'])
+                            st.plotly_chart(area['data'], width='stretch', height=450)
+                            st.markdown("---")
+                    
+                    # Remaining charts in 3-column grid
+                    displayed_viz = (gauge_charts[:2] + all_bars[:3] + top_bars[:1] + pie_charts[:1] + area_charts)
+                    remaining_viz = [v for v in plotly_viz if v not in displayed_viz]
+                    
+                    if remaining_viz:
+                        st.markdown("#### 📋 Additional Visualizations")
+                        for row in range(0, len(remaining_viz), 3):
+                            rem_cols = st.columns(min(3, len(remaining_viz) - row))
+                            for col_idx, col in enumerate(rem_cols):
+                                viz_idx = row + col_idx
+                                if viz_idx < len(remaining_viz):
+                                    viz = remaining_viz[viz_idx]
+                                    with col:
+                                        if viz.get('title'):
+                                            st.markdown(f"**{viz['title']}**")
+                                        if viz.get('description'):
+                                            st.caption(viz['description'])
+                                        st.plotly_chart(viz['data'], use_container_width=True, height=320)
                 else:
                     st.info("No visualizations generated yet. Click 'Generate Dashboard' to create visualizations.")
             else:
