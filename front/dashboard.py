@@ -127,29 +127,6 @@ class Dashboard:
         st.subheader("Statistical Summary")
         st.dataframe(df.describe(), width='stretch')
     
-    def render_visualizations_tab(self):
-        """Render visualizations tab"""
-        st.header("📈 Visualizations")
-        
-        if not st.session_state.data_handler.is_loaded():
-            st.info("👆 Please upload a CSV file from the sidebar to get started")
-            return
-        
-        if not st.session_state.analysis_engine:
-            st.error("Analysis engine not initialized")
-            return
-        
-        # Show saved visualizations
-        if st.session_state.visualizations:
-            st.subheader("Generated Visualizations")
-            for idx, viz in enumerate(st.session_state.visualizations):
-                with st.expander(f"Visualization {idx + 1}", expanded=True):
-                    if viz['type'] == 'plotly_figure':
-                        st.plotly_chart(viz['data'], width='stretch', key=f"viz_{idx}")
-                    st.code(viz['code'], language='python')
-        else:
-            st.info("👆 Use the 'Auto Dashboard' tab to generate visualizations automatically, or use the 'AI Insights' tab to ask questions about your data.")
-    
     def render_auto_dashboard_tab(self):
         """Render auto-generated Power BI-like dashboard"""
         st.header("📊 Auto Dashboard")
@@ -607,20 +584,17 @@ class Dashboard:
         self.render_sidebar()
         
         # Main tabs
-        tab1, tab2, tab3, tab4, tab5 = st.tabs(["📋 Summary", "📊 Auto Dashboard", "📈 Visualizations", "📄 Report", "🤖 AI Insights"])
-        
+        tab1, tab2, tab3, tab4 = st.tabs(["📋 Summary", "📊 Auto Dashboard", "📄 Report", "🤖 AI Insights"])
+
         with tab1:
             self.render_summary_tab()
-        
+
         with tab2:
             self.render_auto_dashboard_tab()
-        
+
         with tab3:
-            self.render_visualizations_tab()
-        
-        with tab4:
             self.render_report_tab()
-        
-        with tab5:
+
+        with tab4:
             self.render_ai_insights_tab()
 
