@@ -513,3 +513,25 @@ Traceback (most recent call last):
 KeyError: 'Date'
 2025-11-18 22:44:42,730 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 19.30s
 2025-11-18 22:44:42,859 - data_analysis_ai - INFO - dashboard_generator.py:290 - Generated visualization: Distribution by Order Priority
+2025-11-18 22:46:58,280 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:46:58,296 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:46:58,363 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:47:06,919 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:47:06,922 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:47:06,932 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:47:07,054 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:47:07,054 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:47:07,067 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:47:08,332 - data_analysis_ai - INFO - data_handler.py:84 - Loading file from bytes: AmazonSalesData.csv (0.01 MB)
+2025-11-18 22:47:08,335 - data_analysis_ai - INFO - data_handler.py:92 - Successfully loaded 100 rows, 14 columns
+2025-11-18 22:47:08,345 - data_analysis_ai - INFO - llm_client.py:31 - Initialized LLM client with model: openai/gpt-oss-120b
+2025-11-18 22:47:08,391 - data_analysis_ai - INFO - dashboard_generator.py:215 - Generating auto dashboard...
+2025-11-18 22:47:23,683 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 15.29s
+2025-11-18 22:47:23,874 - data_analysis_ai - INFO - dashboard_generator.py:298 - Generated visualization: Distribution by Item Type
+2025-11-18 22:47:47,151 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 23.28s
+2025-11-18 22:47:47,425 - data_analysis_ai - INFO - dashboard_generator.py:298 - Generated visualization: Distribution by Region
+2025-11-18 22:47:57,383 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 9.96s
+2025-11-18 22:47:57,520 - data_analysis_ai - INFO - dashboard_generator.py:298 - Generated visualization: Distribution by Country
+2025-11-18 22:47:57,660 - data_analysis_ai - INFO - dashboard_generator.py:253 - Generated table: Summary by Region
+2025-11-18 22:48:18,062 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 20.40s
+2025-11-18 22:48:18,149 - data_analysis_ai - INFO - dashboard_generator.py:298 - Generated visualization: Distribution by Item Type
