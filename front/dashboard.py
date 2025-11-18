@@ -13,6 +13,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from back.data_handler import DataHandler
 from back.analysis_engine import AnalysisEngine
+from back.exceptions import DataLoadError, AnalysisExecutionError, LLMError
+from back.logger import logger
 from ai.agent import DataAnalysisAgent
 
 
@@ -44,26 +46,31 @@ class Dashboard:
         )
         
         if uploaded_file is not None:
-            if st.session_state.data_handler.load_from_bytes(
-                uploaded_file.read(),
-                uploaded_file.name
-            ):
-                st.session_state.data_handler.df = st.session_state.data_handler.get_dataframe()
-                st.session_state.analysis_engine = AnalysisEngine(
-                    st.session_state.data_handler.df
-                )
-                st.session_state.agent = DataAnalysisAgent(
-                    st.session_state.data_handler
-                )
-                st.sidebar.success("✅ File loaded successfully!")
-                
-                # Show data info
-                info = st.session_state.data_handler.get_info()
-                st.sidebar.markdown("### Data Info")
-                st.sidebar.write(f"**Shape:** {info['shape'][0]} rows × {info['shape'][1]} columns")
-                st.sidebar.write(f"**Columns:** {len(info['columns'])}")
-            else:
-                st.sidebar.error("❌ Error loading file")
+            try:
+                if st.session_state.data_handler.load_from_bytes(
+                    uploaded_file.read(),
+                    uploaded_file.name
+                ):
+                    st.session_state.data_handler.df = st.session_state.data_handler.get_dataframe()
+                    st.session_state.analysis_engine = AnalysisEngine(
+                        st.session_state.data_handler.df
+                    )
+                    st.session_state.agent = DataAnalysisAgent(
+                        st.session_state.data_handler
+                    )
+                    st.sidebar.success("✅ File loaded successfully!")
+                    
+                    # Show data info
+                    info = st.session_state.data_handler.get_info()
+                    st.sidebar.markdown("### Data Info")
+                    st.sidebar.write(f"**Shape:** {info['shape'][0]} rows × {info['shape'][1]} columns")
+                    st.sidebar.write(f"**Columns:** {len(info['columns'])}")
+            except DataLoadError as e:
+                logger.error(f"Data load error: {e}")
+                st.sidebar.error(f"❌ Error loading file: {str(e)}")
+            except Exception as e:
+                logger.error(f"Unexpected error: {e}", exc_info=True)
+                st.sidebar.error(f"❌ Unexpected error: {str(e)}")
         
         st.sidebar.markdown("---")
         st.sidebar.markdown("### Navigation")
@@ -151,33 +158,40 @@ class Dashboard:
         
         if execute_btn and code_input:
             with st.spinner("Executing code..."):
-                result, output, error = st.session_state.analysis_engine.execute_code(code_input)
-                
-                if error:
-                    st.error(f"Error: {error}")
-                    st.code(output, language='python')
-                else:
-                    if result is not None:
-                        formatted = st.session_state.analysis_engine.format_result(result)
-                        
-                        if formatted['type'] == 'plotly_figure':
-                            st.plotly_chart(formatted['data'], use_container_width=True)
-                            # Save visualization
-                            st.session_state.visualizations.append({
-                                'type': 'plotly_figure',
-                                'data': formatted['data'],
-                                'code': code_input
-                            })
-                        elif formatted['type'] == 'dataframe':
-                            st.dataframe(formatted['data'], use_container_width=True)
-                        elif formatted['type'] == 'series':
-                            st.dataframe(formatted['data'], use_container_width=True)
-                        else:
-                            st.write("Result:", formatted['data'])
+                try:
+                    result, output, error = st.session_state.analysis_engine.execute_code(code_input)
                     
-                    if output:
-                        st.text("Output:")
-                        st.code(output)
+                    if error:
+                        st.error(f"Error: {error}")
+                        st.code(output, language='python')
+                    else:
+                        if result is not None:
+                            formatted = st.session_state.analysis_engine.format_result(result)
+                            
+                            if formatted['type'] == 'plotly_figure':
+                                st.plotly_chart(formatted['data'], use_container_width=True)
+                                # Save visualization
+                                st.session_state.visualizations.append({
+                                    'type': 'plotly_figure',
+                                    'data': formatted['data'],
+                                    'code': code_input
+                                })
+                            elif formatted['type'] == 'dataframe':
+                                st.dataframe(formatted['data'], use_container_width=True)
+                            elif formatted['type'] == 'series':
+                                st.dataframe(formatted['data'], use_container_width=True)
+                            else:
+                                st.write("Result:", formatted['data'])
+                    
+                        if output:
+                            st.text("Output:")
+                            st.code(output)
+                except AnalysisExecutionError as e:
+                    logger.error(f"Analysis execution error: {e}")
+                    st.error(f"Execution error: {str(e)}")
+                except Exception as e:
+                    logger.error(f"Unexpected error: {e}", exc_info=True)
+                    st.error(f"Unexpected error: {str(e)}")
     
     def render_ai_insights_tab(self):
         """Render AI insights tab"""
@@ -212,20 +226,34 @@ class Dashboard:
         # Display results
         if ask_btn and user_query:
             with st.spinner("AI is analyzing..."):
-                response = st.session_state.agent.analyze(user_query)
-                st.session_state.insights.append({
-                    'query': user_query,
-                    'response': response
-                })
+                try:
+                    response = st.session_state.agent.analyze(user_query)
+                    st.session_state.insights.append({
+                        'query': user_query,
+                        'response': response
+                    })
+                except LLMError as e:
+                    logger.error(f"LLM error: {e}")
+                    st.error(f"AI service error: {str(e)}")
+                except Exception as e:
+                    logger.error(f"Unexpected error: {e}", exc_info=True)
+                    st.error(f"Unexpected error: {str(e)}")
         
         if auto_btn:
             with st.spinner("Performing automatic analysis..."):
-                auto_result = st.session_state.agent.auto_analyze()
-                if 'error' not in auto_result:
-                    st.session_state.insights.append({
-                        'query': 'Auto Analysis',
-                        'response': auto_result.get('summary', 'Analysis completed')
-                    })
+                try:
+                    auto_result = st.session_state.agent.auto_analyze()
+                    if 'error' not in auto_result:
+                        st.session_state.insights.append({
+                            'query': 'Auto Analysis',
+                            'response': auto_result.get('summary', 'Analysis completed')
+                        })
+                except LLMError as e:
+                    logger.error(f"LLM error: {e}")
+                    st.error(f"AI service error: {str(e)}")
+                except Exception as e:
+                    logger.error(f"Unexpected error: {e}", exc_info=True)
+                    st.error(f"Unexpected error: {str(e)}")
         
         # Show insights history
         if st.session_state.insights:

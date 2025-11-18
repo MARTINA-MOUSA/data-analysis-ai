@@ -8,6 +8,8 @@ from typing import Any, Dict, Optional, Tuple
 import traceback
 import sys
 from io import StringIO
+from back.exceptions import AnalysisExecutionError
+from back.logger import logger
 
 
 class AnalysisEngine:
@@ -63,6 +65,7 @@ class AnalysisEngine:
         except Exception as e:
             error = str(e)
             output_text = traceback.format_exc()
+            logger.error(f"Code execution error: {error}", exc_info=True)
         
         finally:
             sys.stdout = old_stdout

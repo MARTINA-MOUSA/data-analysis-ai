@@ -5,6 +5,9 @@ from openai import OpenAI
 from typing import Iterator, Optional
 import sys
 import os
+import time
+from back.exceptions import LLMError
+from back.logger import logger
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -20,9 +23,12 @@ class BasetenLLMClient:
         Config.validate()
         self.client = OpenAI(
             api_key=Config.BASETEN_API_KEY,
-            base_url=Config.BASETEN_BASE_URL
+            base_url=Config.BASETEN_BASE_URL,
+            timeout=Config.BASETEN_TIMEOUT,
+            max_retries=Config.BASETEN_MAX_RETRIES
         )
         self.model = Config.BASETEN_MODEL
+        logger.info(f"Initialized LLM client with model: {self.model}")
     
     def chat_completion(
         self,
@@ -46,6 +52,9 @@ class BasetenLLMClient:
             str: Chunks of the response
         """
         try:
+            logger.debug(f"Making LLM request with {len(messages)} messages")
+            start_time = time.time()
+            
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
@@ -68,9 +77,14 @@ class BasetenLLMClient:
             else:
                 if response.choices and response.choices[0].message.content:
                     yield response.choices[0].message.content
+            
+            elapsed_time = time.time() - start_time
+            logger.info(f"LLM request completed in {elapsed_time:.2f}s")
                     
         except Exception as e:
-            yield f"Error: {str(e)}"
+            error_msg = f"LLM API error: {str(e)}"
+            logger.error(error_msg, exc_info=True)
+            raise LLMError(error_msg)
     
     def get_full_response(
         self,
