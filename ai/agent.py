@@ -1,11 +1,9 @@
 """
 LangChain Agent for Data Analysis
 """
-from langchain.agents import AgentExecutor, create_openai_functions_agent
+from langchain.agents import AgentExecutor, create_openai_tools_agent
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
-from langchain.tools import Tool
-from typing import List
 import sys
 import os
 
@@ -53,23 +51,13 @@ class DataAnalysisAgent:
             handle_parsing_errors=True
         )
     
-    def _create_tools(self) -> List[Tool]:
+    def _create_tools(self):
         """Create list of tools for the agent"""
         column_tool = ColumnInfoTool(self.data_handler)
         code_tool = GenerateCodeTool(self.data_handler, self.llm_client)
         
-        return [
-            Tool(
-                name=column_tool.name,
-                func=column_tool._run,
-                description=column_tool.description
-            ),
-            Tool(
-                name=code_tool.name,
-                func=lambda task, columns=None: code_tool._run(task, columns),
-                description=code_tool.description
-            )
-        ]
+        # Return BaseTool instances directly for tools API
+        return [column_tool, code_tool]
     
     def _create_agent(self):
         """Create the LangChain agent"""
@@ -100,7 +88,7 @@ class DataAnalysisAgent:
             MessagesPlaceholder(variable_name="agent_scratchpad"),
         ])
         
-        agent = create_openai_functions_agent(
+        agent = create_openai_tools_agent(
             llm=self.llm,
             tools=self.tools,
             prompt=prompt
