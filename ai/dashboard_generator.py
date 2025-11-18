@@ -212,7 +212,7 @@ Generate the code:
         visualizations = []
         insights = []
         
-        # Generate key metrics/KPIs
+        # Generate key metrics/KPIs (6 KPIs like HR Dashboard)
         if structure['numeric_cols']:
             metrics = self._generate_metrics(structure['numeric_cols'])
             visualizations.append({
@@ -238,7 +238,28 @@ Generate the code:
                 
                 if not error and result is not None:
                     formatted = self.analysis_engine.format_result(result)
-                    if formatted['type'] == 'plotly_figure':
+                    
+                    # Handle table type
+                    if viz_info.get('type') == 'table':
+                        # Generate table data
+                        cat_col = viz_info['columns'][0] if len(viz_info['columns']) > 0 else None
+                        num_col = viz_info['columns'][1] if len(viz_info['columns']) > 1 else None
+                        
+                        if cat_col and num_col and cat_col in self.df.columns and num_col in self.df.columns:
+                            table_data = self.df.groupby(cat_col)[num_col].agg(['sum', 'count', 'mean']).reset_index()
+                            table_data.columns = [cat_col, 'Total', 'Count', 'Average']
+                            
+                            visualizations.append({
+                                'type': 'table',
+                                'data': table_data,
+                                'code': code,
+                                'title': viz_info['title'],
+                                'description': viz_info['description'],
+                                'position': viz_info.get('position')
+                            })
+                            logger.info(f"Generated table: {viz_info['title']}")
+                    
+                    elif formatted['type'] == 'plotly_figure':
                         # Update figure layout for dark theme
                         fig = formatted['data']
                         try:
@@ -263,7 +284,8 @@ Generate the code:
                             'title': viz_info['title'],
                             'description': viz_info['description'],
                             'chart_type': viz_info.get('type'),
-                            'subtype': viz_info.get('subtype')
+                            'subtype': viz_info.get('subtype'),
+                            'position': viz_info.get('position')
                         })
                         logger.info(f"Generated visualization: {viz_info['title']}")
             except Exception as e:
@@ -280,10 +302,10 @@ Generate the code:
         }
     
     def _generate_metrics(self, numeric_cols: List[str]) -> List[Dict[str, Any]]:
-        """Generate key metrics from numeric columns (like Power BI KPIs)"""
+        """Generate key metrics from numeric columns (6 KPIs like HR Dashboard)"""
         metrics = []
         
-        for col in numeric_cols[:4]:  # Limit to 4 KPIs like Power BI
+        for col in numeric_cols[:6]:  # Limit to 6 KPIs like HR Dashboard
             try:
                 col_data = self.df[col]
                 sum_val = float(col_data.sum()) if col_data.dtype in ['int64', 'float64'] else None
@@ -319,114 +341,163 @@ Generate the code:
         return metrics
     
     def _plan_visualizations(self, structure: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Plan which visualizations to create - All in one page dashboard"""
+        """Plan which visualizations to create - HR Analytics Dashboard layout"""
         plan = []
         
         numeric_cols = structure['numeric_cols']
         categorical_cols = structure['categorical_cols']
         date_cols = structure['date_cols']
         
-        # 1. Gauge Chart - Service Level / Performance Indicator (Top Left)
-        if numeric_cols:
-            num_col = numeric_cols[0]
-            # Calculate percentage for gauge
-            plan.append({
-                'type': 'gauge',
-                'columns': [num_col],
-                'title': f'Performance Indicator',
-                'description': f'Overall performance based on {num_col}',
-                'subtype': None
-            })
+        # Layout matching HR Analytics Dashboard:
+        # Top Right: Donut Chart (1)
+        # Middle Left: Horizontal Bar (2)
+        # Middle Center: Donut Chart (3)
+        # Middle Right: Table/Data (4)
+        # Bottom Left: Vertical Bar (5)
+        # Bottom Center: Area Chart (6)
+        # Bottom Right: Horizontal Bar (7)
         
-        # 2. Semi-circular Gauge - Handle Rate / Completion Rate (Middle Left)
-        if numeric_cols and len(numeric_cols) > 1:
-            num_col = numeric_cols[1]
-            plan.append({
-                'type': 'gauge',
-                'columns': [num_col],
-                'title': f'Completion Rate',
-                'description': f'Completion rate based on {num_col}',
-                'subtype': 'semicircular'
-            })
+        # 1. Top Right - Donut Chart by Category/Gender/Type
+        if categorical_cols and numeric_cols:
+            # Try to find gender/type-like column
+            gender_cols = [c for c in categorical_cols if any(word in c.lower() for word in ['gender', 'sex', 'type', 'category', 'status'])]
+            if not gender_cols:
+                gender_cols = categorical_cols[:1]
+            
+            if gender_cols and numeric_cols:
+                gender_col = gender_cols[0]
+                num_col = numeric_cols[0]
+                plan.append({
+                    'type': 'pie',
+                    'columns': [gender_col, num_col],
+                    'title': f'Distribution by {gender_col}',
+                    'description': f'Breakdown by {gender_col}',
+                    'subtype': 'donut',
+                    'position': 'top_right'
+                })
         
-        # 3. Stacked Bar Chart - Volume by Category/Date (Top Middle)
+        # 2. Middle Left - Horizontal Bar by Job Role/Category
+        if categorical_cols and numeric_cols:
+            role_cols = [c for c in categorical_cols if any(word in c.lower() for word in ['role', 'job', 'position', 'title', 'category'])]
+            if not role_cols:
+                role_cols = categorical_cols[:1] if len(categorical_cols) > 0 else []
+            
+            if role_cols and numeric_cols:
+                role_col = role_cols[0]
+                num_col = numeric_cols[0]
+                plan.append({
+                    'type': 'bar',
+                    'columns': [role_col, num_col],
+                    'title': f'Distribution by {role_col}',
+                    'description': f'Top {role_col} breakdown',
+                    'subtype': 'horizontal',
+                    'position': 'middle_left'
+                })
+        
+        # 3. Middle Center - Donut Chart by Education/Level
+        if categorical_cols and numeric_cols:
+            edu_cols = [c for c in categorical_cols if any(word in c.lower() for word in ['education', 'level', 'degree', 'qualification', 'field'])]
+            if not edu_cols and len(categorical_cols) > 1:
+                edu_cols = categorical_cols[1:2]
+            
+            if edu_cols and numeric_cols:
+                edu_col = edu_cols[0]
+                num_col = numeric_cols[1] if len(numeric_cols) > 1 else numeric_cols[0]
+                plan.append({
+                    'type': 'pie',
+                    'columns': [edu_col, num_col],
+                    'title': f'Distribution by {edu_col}',
+                    'description': f'Breakdown by {edu_col}',
+                    'subtype': 'donut',
+                    'position': 'middle_center'
+                })
+        
+        # 4. Middle Right - Table/Summary by Category
         if categorical_cols and numeric_cols:
             cat_col = categorical_cols[0]
             num_col = numeric_cols[0]
             plan.append({
-                'type': 'bar',
+                'type': 'table',
                 'columns': [cat_col, num_col],
-                'title': f'Volume by {cat_col}',
-                'description': f'Stacked volume breakdown by {cat_col}',
-                'subtype': 'stacked'
+                'title': f'Summary by {cat_col}',
+                'description': f'Detailed breakdown table',
+                'subtype': 'summary',
+                'position': 'middle_right'
             })
         
-        # 4. Top Skills/Categories with Progress Bars (Middle Middle)
+        # 5. Bottom Left - Vertical Bar by Age/Range
         if categorical_cols and numeric_cols:
-            cat_col = categorical_cols[0] if categorical_cols else None
-            num_col = numeric_cols[0]
-            plan.append({
-                'type': 'horizontal_bar',
-                'columns': [cat_col, num_col],
-                'title': f'Top Categories by {num_col}',
-                'description': f'Top performing categories',
-                'subtype': 'top_n'
-            })
-        
-        # 5. Horizontal Stacked Bar - Volume by Modality/Type (Top Right)
-        if categorical_cols and numeric_cols:
-            type_cols = [c for c in categorical_cols if any(word in c.lower() for word in ['type', 'modality', 'category', 'method', 'mode'])]
-            if not type_cols:
-                type_cols = categorical_cols[:1]
+            age_cols = [c for c in categorical_cols if any(word in c.lower() for word in ['age', 'range', 'group', 'bracket'])]
+            if not age_cols and len(categorical_cols) > 2:
+                age_cols = categorical_cols[2:3]
+            elif not age_cols:
+                age_cols = categorical_cols[:1]
             
-            if type_cols and numeric_cols:
-                type_col = type_cols[0]
+            if age_cols and numeric_cols:
+                age_col = age_cols[0]
                 num_col = numeric_cols[0]
                 plan.append({
                     'type': 'bar',
-                    'columns': [type_col, num_col],
-                    'title': f'Volume by {type_col}',
-                    'description': f'Volume breakdown by {type_col}',
-                    'subtype': 'stacked_horizontal'
+                    'columns': [age_col, num_col],
+                    'title': f'Distribution by {age_col}',
+                    'description': f'Breakdown by {age_col}',
+                    'subtype': 'vertical',
+                    'position': 'bottom_left'
                 })
         
-        # 6. Area Chart - Trend over Time (Bottom Right)
+        # 6. Bottom Center - Area Chart by Years/Time
         if date_cols and numeric_cols:
             date_col = date_cols[0]
             num_col = numeric_cols[0]
             plan.append({
                 'type': 'area',
                 'columns': [date_col, num_col],
-                'title': f'{num_col} Trend Over Time',
-                'description': f'Trend analysis of {num_col}',
-                'subtype': 'stacked'
+                'title': f'Trend by {date_col}',
+                'description': f'Trend over time',
+                'subtype': 'stacked',
+                'position': 'bottom_center'
             })
         elif categorical_cols and numeric_cols:
-            # Use categorical as x-axis if no date
-            cat_col = categorical_cols[0]
-            num_col = numeric_cols[0]
-            plan.append({
-                'type': 'area',
-                'columns': [cat_col, num_col],
-                'title': f'{num_col} Distribution',
-                'description': f'Distribution of {num_col}',
-                'subtype': None
-            })
-        
-        # 7. Donut/Pie Chart - Distribution (if we have space)
-        if categorical_cols and numeric_cols and len(plan) < 7:
-            cat_col = categorical_cols[0] if len(categorical_cols) > 0 else None
-            num_col = numeric_cols[1] if len(numeric_cols) > 1 else numeric_cols[0]
-            if cat_col:
+            # Use categorical for grouping if no date
+            years_cols = [c for c in categorical_cols if any(word in c.lower() for word in ['year', 'time', 'period', 'duration'])]
+            if not years_cols and len(categorical_cols) > 3:
+                years_cols = categorical_cols[3:4]
+            elif not years_cols:
+                years_cols = categorical_cols[:1]
+            
+            if years_cols and numeric_cols:
+                years_col = years_cols[0]
+                num_col = numeric_cols[0]
                 plan.append({
-                    'type': 'pie',
-                    'columns': [cat_col, num_col],
-                    'title': f'Distribution by {cat_col}',
-                    'description': f'Percentage distribution',
-                    'subtype': 'donut'
+                    'type': 'area',
+                    'columns': [years_col, num_col],
+                    'title': f'Distribution by {years_col}',
+                    'description': f'Trend analysis',
+                    'subtype': 'stacked',
+                    'position': 'bottom_center'
                 })
         
-        return plan[:8]  # Allow up to 8 visualizations for comprehensive dashboard
+        # 7. Bottom Right - Horizontal Bar by Salary/Amount
+        if categorical_cols and numeric_cols:
+            salary_cols = [c for c in categorical_cols if any(word in c.lower() for word in ['salary', 'amount', 'price', 'cost', 'value'])]
+            if not salary_cols and len(categorical_cols) > 4:
+                salary_cols = categorical_cols[4:5]
+            elif not salary_cols:
+                salary_cols = categorical_cols[:1]
+            
+            if salary_cols and numeric_cols:
+                salary_col = salary_cols[0]
+                num_col = numeric_cols[0]
+                plan.append({
+                    'type': 'bar',
+                    'columns': [salary_col, num_col],
+                    'title': f'Distribution by {salary_col}',
+                    'description': f'Breakdown by {salary_col}',
+                    'subtype': 'horizontal',
+                    'position': 'bottom_right'
+                })
+        
+        return plan[:7]  # Return up to 7 visualizations matching the layout
     
     def _generate_insights(self, structure: Dict[str, Any], visualizations: List[Dict[str, Any]]) -> List[str]:
         """Generate insights from the data"""

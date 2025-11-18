@@ -276,8 +276,8 @@ class Dashboard:
                 if metrics_viz:
                     st.subheader("📈 Key Metrics")
                     metrics = metrics_viz[0].get('data', [])
-                    cols = st.columns(min(len(metrics), 4))
-                    for idx, metric in enumerate(metrics[:4]):
+                    cols = st.columns(min(len(metrics), 6))
+                    for idx, metric in enumerate(metrics[:6]):
                         with cols[idx % len(cols)]:
                             if metric.get('value') is not None:
                                 st.metric(
@@ -286,99 +286,131 @@ class Dashboard:
                                 )
                     st.markdown("---")
                 
-                # Display visualizations in grid layout (all in one page like the image)
+                # Display visualizations in HR Analytics Dashboard layout (all in one page)
                 plotly_viz = [v for v in dashboard['visualizations'] if v.get('type') == 'plotly_figure']
-                if plotly_viz:
+                table_viz = [v for v in dashboard['visualizations'] if v.get('type') == 'table']
+                
+                if plotly_viz or table_viz:
                     st.subheader("📊 Complete Dashboard - All Visualizations")
                     
-                    # Separate charts by type for organized layout
-                    gauge_charts = [v for v in plotly_viz if v.get('chart_type') == 'gauge']
-                    bar_charts = [v for v in plotly_viz if v.get('chart_type') == 'bar' or v.get('chart_type') == 'horizontal_bar']
-                    area_charts = [v for v in plotly_viz if v.get('chart_type') == 'area']
-                    pie_charts = [v for v in plotly_viz if v.get('chart_type') == 'pie']
+                    # Separate charts by position
+                    top_right = [v for v in plotly_viz if v.get('position') == 'top_right']
+                    middle_left = [v for v in plotly_viz if v.get('position') == 'middle_left']
+                    middle_center = [v for v in plotly_viz if v.get('position') == 'middle_center']
+                    middle_right = [v for v in table_viz if v.get('position') == 'middle_right']
+                    bottom_left = [v for v in plotly_viz if v.get('position') == 'bottom_left']
+                    bottom_center = [v for v in plotly_viz if v.get('position') == 'bottom_center']
+                    bottom_right = [v for v in plotly_viz if v.get('position') == 'bottom_right']
                     
-                    # Row 1: Gauges (Performance Indicators) - 2 columns
-                    if gauge_charts:
-                        st.markdown("#### 🎯 Performance Indicators")
-                        gauge_cols = st.columns(min(len(gauge_charts), 2))
-                        for idx, gauge in enumerate(gauge_charts[:2]):
-                            with gauge_cols[idx]:
-                                if gauge.get('title'):
-                                    st.markdown(f"**{gauge['title']}**")
-                                if gauge.get('description'):
-                                    st.caption(gauge['description'])
-                                chart_key = f"auto_gauge_{idx}_{gauge.get('title', str(idx)).replace(' ', '_')[:20]}"
-                                st.plotly_chart(gauge['data'], use_container_width=True, height=350, key=chart_key)
+                    # If no positions assigned, organize by type
+                    if not any([top_right, middle_left, middle_center, middle_right, bottom_left, bottom_center, bottom_right]):
+                        pie_charts = [v for v in plotly_viz if v.get('chart_type') == 'pie']
+                        bar_charts = [v for v in plotly_viz if v.get('chart_type') == 'bar' or v.get('chart_type') == 'horizontal_bar']
+                        area_charts = [v for v in plotly_viz if v.get('chart_type') == 'area']
+                        
+                        # Assign positions based on order
+                        top_right = pie_charts[:1] if pie_charts else []
+                        middle_left = [b for b in bar_charts if b.get('subtype') == 'horizontal'][:1] if bar_charts else []
+                        middle_center = pie_charts[1:2] if len(pie_charts) > 1 else []
+                        bottom_left = [b for b in bar_charts if b.get('subtype') == 'vertical'][:1] if bar_charts else []
+                        bottom_center = area_charts[:1] if area_charts else []
+                        bottom_right = [b for b in bar_charts if b.get('subtype') == 'horizontal'][1:2] if len([b for b in bar_charts if b.get('subtype') == 'horizontal']) > 1 else []
+                    
+                    # Top Row: Empty space on left, Donut chart on right
+                    if top_right:
+                        top_row_cols = st.columns([2, 1])
+                        with top_row_cols[1]:
+                            viz = top_right[0]
+                            if viz.get('title'):
+                                st.markdown(f"**{viz['title']}**")
+                            if viz.get('description'):
+                                st.caption(viz['description'])
+                            chart_key = f"auto_top_right_{hash(viz.get('title', 'top_right'))}"
+                            st.plotly_chart(viz['data'], use_container_width=True, height=350, key=chart_key)
                         st.markdown("---")
                     
-                    # Row 2: Stacked bars and volume charts - 3 columns
-                    if bar_charts:
-                        st.markdown("#### 📊 Volume & Distribution Analysis")
-                        # Get stacked bars first
-                        stacked_bars = [v for v in bar_charts if v.get('subtype') in ['stacked', 'stacked_horizontal']]
-                        regular_bars = [v for v in bar_charts if v not in stacked_bars]
+                    # Middle Row: 3 columns (Horizontal Bar, Donut, Table)
+                    if middle_left or middle_center or middle_right:
+                        mid_cols = st.columns(3)
                         
-                        bar_cols = st.columns(3)
-                        all_bars = stacked_bars[:2] + regular_bars[:1]  # 2 stacked + 1 regular
+                        # Middle Left - Horizontal Bar
+                        if middle_left:
+                            with mid_cols[0]:
+                                viz = middle_left[0]
+                                if viz.get('title'):
+                                    st.markdown(f"**{viz['title']}**")
+                                if viz.get('description'):
+                                    st.caption(viz['description'])
+                                chart_key = f"auto_mid_left_{hash(viz.get('title', 'mid_left'))}"
+                                st.plotly_chart(viz['data'], use_container_width=True, height=400, key=chart_key)
                         
-                        for idx, bar in enumerate(all_bars[:3]):
-                            with bar_cols[idx]:
-                                if bar.get('title'):
-                                    st.markdown(f"**{bar['title']}**")
-                                if bar.get('description'):
-                                    st.caption(bar['description'])
-                                chart_key = f"auto_bar_{idx}_{bar.get('title', str(idx)).replace(' ', '_')[:20]}"
-                                st.plotly_chart(bar['data'], use_container_width=True, height=380, key=chart_key)
+                        # Middle Center - Donut
+                        if middle_center:
+                            with mid_cols[1]:
+                                viz = middle_center[0]
+                                if viz.get('title'):
+                                    st.markdown(f"**{viz['title']}**")
+                                if viz.get('description'):
+                                    st.caption(viz['description'])
+                                chart_key = f"auto_mid_center_{hash(viz.get('title', 'mid_center'))}"
+                                st.plotly_chart(viz['data'], use_container_width=True, height=400, key=chart_key)
+                        
+                        # Middle Right - Table
+                        if middle_right:
+                            with mid_cols[2]:
+                                viz = middle_right[0]
+                                if viz.get('title'):
+                                    st.markdown(f"**{viz['title']}**")
+                                if viz.get('description'):
+                                    st.caption(viz['description'])
+                                # Display table data
+                                if viz.get('data'):
+                                    st.dataframe(viz['data'], width='stretch', height=400)
                         st.markdown("---")
                     
-                    # Row 3: Top categories and pie charts - 2 columns
-                    top_bars = [v for v in bar_charts if v.get('subtype') == 'top_n']
-                    if top_bars or pie_charts:
-                        st.markdown("#### 📈 Category & Skills Analysis")
-                        cat_cols = st.columns(2)
-                        col_idx = 0
+                    # Bottom Row: 3 columns (Vertical Bar, Area, Horizontal Bar)
+                    if bottom_left or bottom_center or bottom_right:
+                        bot_cols = st.columns(3)
                         
-                        # Top categories (horizontal bars with progress)
-                        if top_bars and col_idx < 2:
-                            with cat_cols[col_idx]:
-                                top = top_bars[0]
-                                if top.get('title'):
-                                    st.markdown(f"**{top['title']}**")
-                                if top.get('description'):
-                                    st.caption(top['description'])
-                                chart_key = f"auto_top_{top.get('title', 'top_categories').replace(' ', '_')[:20]}_{col_idx}"
-                                st.plotly_chart(top['data'], use_container_width=True, height=420, key=chart_key)
-                            col_idx += 1
+                        # Bottom Left - Vertical Bar
+                        if bottom_left:
+                            with bot_cols[0]:
+                                viz = bottom_left[0]
+                                if viz.get('title'):
+                                    st.markdown(f"**{viz['title']}**")
+                                if viz.get('description'):
+                                    st.caption(viz['description'])
+                                chart_key = f"auto_bot_left_{hash(viz.get('title', 'bot_left'))}"
+                                st.plotly_chart(viz['data'], use_container_width=True, height=400, key=chart_key)
                         
-                        # Pie/Donut charts
-                        if pie_charts and col_idx < 2:
-                            with cat_cols[col_idx]:
-                                pie = pie_charts[0]
-                                if pie.get('title'):
-                                    st.markdown(f"**{pie['title']}**")
-                                if pie.get('description'):
-                                    st.caption(pie['description'])
-                                chart_key = f"auto_pie_{pie.get('title', 'pie_chart').replace(' ', '_')[:20]}_{col_idx}"
-                                st.plotly_chart(pie['data'], use_container_width=True, height=420, key=chart_key)
-                        st.markdown("---")
+                        # Bottom Center - Area Chart
+                        if bottom_center:
+                            with bot_cols[1]:
+                                viz = bottom_center[0]
+                                if viz.get('title'):
+                                    st.markdown(f"**{viz['title']}**")
+                                if viz.get('description'):
+                                    st.caption(viz['description'])
+                                chart_key = f"auto_bot_center_{hash(viz.get('title', 'bot_center'))}"
+                                st.plotly_chart(viz['data'], use_container_width=True, height=400, key=chart_key)
+                        
+                        # Bottom Right - Horizontal Bar
+                        if bottom_right:
+                            with bot_cols[2]:
+                                viz = bottom_right[0]
+                                if viz.get('title'):
+                                    st.markdown(f"**{viz['title']}**")
+                                if viz.get('description'):
+                                    st.caption(viz['description'])
+                                chart_key = f"auto_bot_right_{hash(viz.get('title', 'bot_right'))}"
+                                st.plotly_chart(viz['data'], use_container_width=True, height=400, key=chart_key)
                     
-                    # Full width: Area charts for trends
-                    if area_charts:
-                        st.markdown("#### 📉 Trend Analysis Over Time")
-                        for idx, area in enumerate(area_charts):
-                            if area.get('title'):
-                                st.markdown(f"**{area['title']}**")
-                            if area.get('description'):
-                                st.caption(area['description'])
-                            chart_key = f"auto_area_{idx}_{area.get('title', str(idx)).replace(' ', '_')[:20]}"
-                            st.plotly_chart(area['data'], width='stretch', height=450, key=chart_key)
-                            st.markdown("---")
-                    
-                    # Remaining charts in 3-column grid
-                    displayed_viz = (gauge_charts[:2] + all_bars[:3] + top_bars[:1] + pie_charts[:1] + area_charts)
-                    remaining_viz = [v for v in plotly_viz if v not in displayed_viz]
+                    # Display any remaining visualizations
+                    all_displayed = top_right + middle_left + middle_center + middle_right + bottom_left + bottom_center + bottom_right
+                    remaining_viz = [v for v in plotly_viz if v not in all_displayed]
                     
                     if remaining_viz:
+                        st.markdown("---")
                         st.markdown("#### 📋 Additional Visualizations")
                         for row in range(0, len(remaining_viz), 3):
                             rem_cols = st.columns(min(3, len(remaining_viz) - row))
@@ -391,7 +423,7 @@ class Dashboard:
                                             st.markdown(f"**{viz['title']}**")
                                         if viz.get('description'):
                                             st.caption(viz['description'])
-                                        chart_key = f"auto_additional_{row}_{col_idx}_{viz_idx}_{viz.get('title', f'{row}_{col_idx}').replace(' ', '_')[:15]}"
+                                        chart_key = f"auto_additional_{row}_{col_idx}_{viz_idx}_{hash(viz.get('title', f'{row}_{col_idx}'))}"
                                         st.plotly_chart(viz['data'], use_container_width=True, height=320, key=chart_key)
                 else:
                     st.info("No visualizations generated yet. Click 'Generate Dashboard' to create visualizations.")
