@@ -156,6 +156,12 @@ class AutoDashboardGenerator:
 - Create a stacked bar/area chart
 - Use barmode='stack' for bars
 """
+        elif viz_type == 'table':
+            special_instructions = """
+- DO NOT create plotly tables with go.Table
+- Tables are handled separately in this system
+- This should not be called for table type
+"""
         
         context = f"""
 Generate Python code to create a {viz_type} chart using plotly.
@@ -226,6 +232,28 @@ Generate the code:
         
         for viz_info in viz_plan:
             try:
+                # Handle table type separately (no plotly code needed)
+                if viz_info.get('type') == 'table':
+                    # Generate table data directly from pandas
+                    cat_col = viz_info['columns'][0] if len(viz_info['columns']) > 0 else None
+                    num_col = viz_info['columns'][1] if len(viz_info['columns']) > 1 else None
+                    
+                    if cat_col and num_col and cat_col in self.df.columns and num_col in self.df.columns:
+                        table_data = self.df.groupby(cat_col)[num_col].agg(['sum', 'count', 'mean']).reset_index()
+                        table_data.columns = [cat_col, 'Total', 'Count', 'Average']
+                        
+                        visualizations.append({
+                            'type': 'table',
+                            'data': table_data,
+                            'code': f"# Table generated from {cat_col} and {num_col}",
+                            'title': viz_info['title'],
+                            'description': viz_info['description'],
+                            'position': viz_info.get('position')
+                        })
+                        logger.info(f"Generated table: {viz_info['title']}")
+                    continue  # Skip plotly code generation for tables
+                
+                # Generate plotly code for other visualization types
                 code = self.generate_visualization_code(
                     viz_info['type'],
                     viz_info['columns'],
@@ -239,27 +267,7 @@ Generate the code:
                 if not error and result is not None:
                     formatted = self.analysis_engine.format_result(result)
                     
-                    # Handle table type
-                    if viz_info.get('type') == 'table':
-                        # Generate table data
-                        cat_col = viz_info['columns'][0] if len(viz_info['columns']) > 0 else None
-                        num_col = viz_info['columns'][1] if len(viz_info['columns']) > 1 else None
-                        
-                        if cat_col and num_col and cat_col in self.df.columns and num_col in self.df.columns:
-                            table_data = self.df.groupby(cat_col)[num_col].agg(['sum', 'count', 'mean']).reset_index()
-                            table_data.columns = [cat_col, 'Total', 'Count', 'Average']
-                            
-                            visualizations.append({
-                                'type': 'table',
-                                'data': table_data,
-                                'code': code,
-                                'title': viz_info['title'],
-                                'description': viz_info['description'],
-                                'position': viz_info.get('position')
-                            })
-                            logger.info(f"Generated table: {viz_info['title']}")
-                    
-                    elif formatted['type'] == 'plotly_figure':
+                    if formatted['type'] == 'plotly_figure':
                         # Update figure layout for dark theme
                         fig = formatted['data']
                         try:
