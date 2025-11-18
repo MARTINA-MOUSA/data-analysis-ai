@@ -545,3 +545,5 @@ KeyError: 'Date'
 2025-11-18 22:49:53,110 - data_analysis_ai - INFO - report_generator.py:39 - Generating comprehensive report...
 2025-11-18 22:50:45,547 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 52.43s
 2025-11-18 22:51:50,235 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 64.62s
+2025-11-18 22:52:35,266 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 45.02s
+2025-11-18 22:53:34,090 - data_analysis_ai - INFO - llm_client.py:82 - LLM request completed in 58.82s
