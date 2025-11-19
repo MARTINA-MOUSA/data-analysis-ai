@@ -9,6 +9,9 @@ AI-powered data analysis project using Streamlit, LangChain, and Baseten API
 - 📈 Create interactive visualizations using Plotly
 - 🔍 Automatic data analysis
 - 💻 Execute Python code directly for custom analysis
+- 🗺️ ERD-style relationship insights (numeric, categorical, hierarchical)
+- 🚨 Outlier detection and summaries
+- 🧠 Feature engineering advisor powered by LLM
 - 🚀 Production-ready with Docker support
 - 📊 Comprehensive logging and error handling
 - 🔒 Security features and validation
@@ -87,8 +90,12 @@ For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)
 1. Upload a CSV file from the sidebar
 2. Use the tabs to navigate:
    - **Summary**: Overview of the data
-   - **Visualizations**: Create charts and graphs
-   - **AI Insights**: Ask questions to the AI
+   - **Auto Dashboard**: Generate a Power BI-style dashboard automatically
+   - **ERD**: Visualize numeric/categorical relationships and hierarchies
+   - **Outliers**: Detect anomalous rows and inspect samples
+   - **Report**: Generate a comprehensive narrative report
+   - **Feature Ideas**: Get AI-generated feature engineering suggestions
+   - **AI Insights**: Ask questions to the AI in natural language
 
 ## Configuration
 
@@ -116,6 +123,7 @@ See `env.example` for all available options.
 - ✅ File size limits
 - ✅ Performance monitoring
 - ✅ Environment-based configuration
+- ✅ ERD visualizations, outlier detection, feature engineering advisor
 
 ## Technologies Used
 

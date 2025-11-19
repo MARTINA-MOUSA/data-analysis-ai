@@ -15,6 +15,8 @@ from back.data_handler import DataHandler
 from back.analysis_engine import AnalysisEngine
 from back.exceptions import DataLoadError, AnalysisExecutionError, LLMError
 from back.logger import logger
+from back.erd_generator import ERDGenerator
+from back.outlier_detector import OutlierDetector
 from ai.agent import DataAnalysisAgent
 
 
@@ -33,6 +35,16 @@ class Dashboard:
             st.session_state.visualizations = []
         if 'insights' not in st.session_state:
             st.session_state.insights = []
+        if 'erd_data' not in st.session_state:
+            st.session_state.erd_data = None
+        if 'erd_summary' not in st.session_state:
+            st.session_state.erd_summary = None
+        if 'outlier_data' not in st.session_state:
+            st.session_state.outlier_data = None
+        if 'outlier_summary' not in st.session_state:
+            st.session_state.outlier_summary = None
+        if 'feature_ideas' not in st.session_state:
+            st.session_state.feature_ideas = None
         if 'auto_dashboard' not in st.session_state:
             st.session_state.auto_dashboard = None
         if 'report' not in st.session_state:
@@ -370,6 +382,132 @@ class Dashboard:
             
             **No coding required!** 🚀
             """)
+
+    def render_erd_tab(self):
+        """Render ERD style relationship visuals"""
+        st.header("🗺️ ERD & Relationship Maps")
+
+        if not st.session_state.data_handler.is_loaded():
+            st.info("👆 Please upload a CSV file from the sidebar to get started")
+            return
+
+        df = st.session_state.data_handler.get_dataframe()
+
+        col1, col2 = st.columns([1, 5])
+        with col1:
+            regenerate = st.button("🔄 Generate ERD", type="primary")
+
+        if regenerate or st.session_state.erd_data is None:
+            with st.spinner("Analyzing relationships..."):
+                generator = ERDGenerator(df)
+                erd_output = generator.generate()
+                st.session_state.erd_data = erd_output
+                st.session_state.erd_summary = erd_output.get("summary")
+
+        erd_data = st.session_state.erd_data
+        if not erd_data:
+            st.info("No relationships detected yet. Try generating again.")
+            return
+
+        if erd_data.get("numeric_network"):
+            st.subheader("Numeric Relationship Network")
+            st.plotly_chart(erd_data["numeric_network"], use_container_width=True)
+
+        if erd_data.get("categorical_heatmap"):
+            st.subheader("Categorical Relationship Heatmap")
+            st.plotly_chart(erd_data["categorical_heatmap"], use_container_width=True)
+
+        if erd_data.get("hierarchy_chart"):
+            st.subheader("Hierarchy View")
+            st.plotly_chart(erd_data["hierarchy_chart"], use_container_width=True)
+
+        summary_notes = erd_data.get("summary", [])
+        if summary_notes:
+            st.markdown("### Relationship Notes")
+            for note in summary_notes:
+                st.markdown(f"- {note}")
+
+    def render_outliers_tab(self):
+        """Render outlier detection results"""
+        st.header("🚨 Outlier Detection")
+
+        if not st.session_state.data_handler.is_loaded():
+            st.info("👆 Please upload a CSV file from the sidebar to get started")
+            return
+
+        df = st.session_state.data_handler.get_dataframe()
+
+        col1, col2 = st.columns([1, 5])
+        with col1:
+            analyze_btn = st.button("🔍 Detect Outliers", type="primary")
+
+        if analyze_btn or st.session_state.outlier_data is None:
+            with st.spinner("Scanning for outliers..."):
+                detector = OutlierDetector(df)
+                outlier_data = detector.detect()
+                st.session_state.outlier_data = outlier_data
+                st.session_state.outlier_summary = outlier_data.get("raw_summary")
+
+        outlier_data = st.session_state.outlier_data
+        if not outlier_data:
+            st.info("No outliers detected yet.")
+            return
+
+        st.metric("Total outlier rows", outlier_data.get("total_outliers", 0))
+
+        if outlier_data.get("figure") is not None:
+            st.plotly_chart(outlier_data["figure"], use_container_width=True)
+
+        summary_df = outlier_data.get("summary_df")
+        if summary_df is not None and not summary_df.empty:
+            st.markdown("### Outlier Summary by Column")
+            st.dataframe(summary_df, use_container_width=True)
+
+        samples = outlier_data.get("samples")
+        if samples is not None and not samples.empty:
+            st.markdown("### Sample Outlier Rows")
+            st.dataframe(samples, use_container_width=True)
+
+        notes = outlier_data.get("text_summary", [])
+        if notes:
+            st.markdown("### Notes")
+            for note in notes:
+                st.markdown(f"- {note}")
+
+    def render_feature_engineering_tab(self):
+        """Render LLM generated feature engineering ideas"""
+        st.header("🧠 Feature Engineering Ideas")
+
+        if not st.session_state.data_handler.is_loaded():
+            st.info("👆 Please upload a CSV file from the sidebar to get started")
+            return
+
+        if not st.session_state.agent:
+            st.error("AI Agent not initialized")
+            return
+
+        dataset_info = st.session_state.data_handler.get_info()
+
+        col1, col2 = st.columns([1, 5])
+        with col1:
+            generate_btn = st.button("✨ Generate Feature Ideas", type="primary")
+
+        if generate_btn or st.session_state.feature_ideas is None:
+            with st.spinner("LLM is brainstorming feature ideas..."):
+                ideas = st.session_state.agent.generate_feature_suggestions(
+                    dataset_info=dataset_info,
+                    outlier_summary=st.session_state.get("outlier_summary"),
+                    erd_summary=st.session_state.get("erd_summary"),
+                )
+                st.session_state.feature_ideas = ideas
+
+        feature_ideas = st.session_state.feature_ideas
+        if not feature_ideas:
+            st.info("Press the button above to generate feature engineering ideas.")
+            return
+
+        st.markdown("### Suggested Ideas")
+        st.markdown(feature_ideas.get("text", "No ideas generated yet."))
     
     def render_report_tab(self):
         """Render comprehensive data analysis report"""
@@ -584,7 +722,15 @@ class Dashboard:
         self.render_sidebar()
         
         # Main tabs
-        tab1, tab2, tab3, tab4 = st.tabs(["📋 Summary", "📊 Auto Dashboard", "📄 Report", "🤖 AI Insights"])
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+            "📋 Summary",
+            "📊 Auto Dashboard",
+            "🗺️ ERD",
+            "🚨 Outliers",
+            "📄 Report",
+            "🧠 Feature Ideas",
+            "🤖 AI Insights",
+        ])
 
         with tab1:
             self.render_summary_tab()
@@ -593,8 +739,17 @@ class Dashboard:
             self.render_auto_dashboard_tab()
 
         with tab3:
-            self.render_report_tab()
+            self.render_erd_tab()
 
         with tab4:
+            self.render_outliers_tab()
+
+        with tab5:
+            self.render_report_tab()
+
+        with tab6:
+            self.render_feature_engineering_tab()
+
+        with tab7:
             self.render_ai_insights_tab()
 

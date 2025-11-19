@@ -3,6 +3,7 @@ LangChain Agent for Data Analysis
 """
 # Import AgentExecutor - handle different LangChain versions
 import importlib
+from typing import Dict, List, Optional
 
 # Try multiple import strategies
 AgentExecutor = None
@@ -74,6 +75,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from ai.data_analysis_tools import ColumnInfoTool, GenerateCodeTool
+from ai.feature_advisor import FeatureEngineeringAdvisor
 from ai.llm_client import BasetenLLMClient
 from back.data_handler import DataHandler
 from config import Config
@@ -91,6 +93,7 @@ class DataAnalysisAgent:
         """
         self.data_handler = data_handler
         self.llm_client = BasetenLLMClient()
+        self.feature_advisor: Optional[FeatureEngineeringAdvisor] = None
         
         # Create custom LLM wrapper for LangChain
         # Note: LangChain's ChatOpenAI uses base_url parameter for custom endpoints
@@ -260,4 +263,20 @@ class DataAnalysisAgent:
         
         generator = ReportGenerator(self.data_handler, self.llm_client)
         return generator.generate_comprehensive_report()
+
+    def generate_feature_suggestions(
+        self,
+        dataset_info: Dict[str, Any],
+        outlier_summary: Optional[List[Dict[str, Any]]] = None,
+        erd_summary: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
+        """Generate feature engineering recommendations."""
+        if self.feature_advisor is None:
+            self.feature_advisor = FeatureEngineeringAdvisor(self.llm_client)
+
+        return self.feature_advisor.generate_suggestions(
+            dataset_info=dataset_info,
+            outlier_summary=outlier_summary,
+            erd_summary=erd_summary,
+        )
 
