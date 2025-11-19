@@ -51,9 +51,10 @@ class OutlierDetector:
                 }
             )
 
-        summary_df = pd.DataFrame(summary_rows).sort_values(by="outlier_count", ascending=False)
+        summary_df = pd.DataFrame(summary_rows)
         summary_fig = None
         if not summary_df.empty:
+            summary_df = summary_df.sort_values(by="outlier_count", ascending=False)
             summary_fig = px.bar(
                 summary_df,
                 x="column",
