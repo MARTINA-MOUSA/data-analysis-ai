@@ -3,7 +3,7 @@ LangChain Agent for Data Analysis
 """
 # Import AgentExecutor - handle different LangChain versions
 import importlib
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 # Try multiple import strategies
 AgentExecutor = None
