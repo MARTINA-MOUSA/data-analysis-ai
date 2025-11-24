@@ -9,4 +9,15 @@ python-dotenv>=1.0.0
 numpy>=1.26.0
 psutil>=5.9.0
 requests>=2.31.0
+# Production requirements
+langchain>=0.1.0
+langchain-openai>=0.0.5
+openai>=1.12.0
+pandas>=2.1.0
+plotly>=5.18.0
+python-dotenv>=1.0.0
+numpy>=1.26.0
+gunicorn>=21.2.0
+requests>=2.31.0
+
 
